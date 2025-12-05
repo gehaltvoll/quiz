@@ -1,0 +1,61 @@
+{
+  "title": "Python Grundlagen Quiz",
+  "subtitle": "Testen Sie Ihr Wissen über Python-Programmierung",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Was gibt der folgende Code aus? print(5 + 3 * 2)",
+      "answers": [
+        { "text": "16", "correct": false },
+        { "text": "11", "correct": true },
+        { "text": "13", "correct": false },
+        { "text": "Fehler", "correct": false }
+      ],
+      "explanation": "Die Multiplikation wird vor der Addition ausgeführt (Punkt vor Strich): 3 * 2 = 6, dann 5 + 6 = 11"
+    },
+    {
+      "id": 2,
+      "question": "Welcher Datentyp ist das Ergebnis von: type('Hallo')",
+      "answers": [
+        { "text": "int", "correct": false },
+        { "text": "str", "correct": true },
+        { "text": "float", "correct": false },
+        { "text": "bool", "correct": false }
+      ],
+      "explanation": "Texte in Anführungszeichen sind vom Typ 'str' (String)."
+    },
+    {
+      "id": 3,
+      "question": "Was macht die range(5) Funktion?",
+      "answers": [
+        { "text": "Erstellt die Liste [1, 2, 3, 4, 5]", "correct": false },
+        { "text": "Erstellt die Liste [0, 1, 2, 3, 4]", "correct": true },
+        { "text": "Gibt die Zahl 5 zurück", "correct": false },
+        { "text": "Zählt von 5 bis 0", "correct": false }
+      ],
+      "explanation": "range(5) erzeugt die Zahlen von 0 bis 4 (insgesamt 5 Zahlen, aber die 5 ist nicht dabei)."
+    },
+    {
+      "id": 4,
+      "question": "Welches Schlüsselwort wird verwendet, um eine Funktion zu definieren?",
+      "answers": [
+        { "text": "function", "correct": false },
+        { "text": "def", "correct": true },
+        { "text": "func", "correct": false },
+        { "text": "define", "correct": false }
+      ],
+      "explanation": "In Python wird 'def' verwendet: def meine_funktion():"
+    },
+    {
+      "id": 5,
+      "question": "Was ist das Ergebnis von: len([1, 2, 3, 4])?",
+      "answers": [
+        { "text": "3", "correct": false },
+        { "text": "4", "correct": true },
+        { "text": "10", "correct": false },
+        { "text": "[1, 2, 3, 4]", "correct": false }
+      ],
+      "explanation": "len() gibt die Anzahl der Elemente in einer Liste zurück. Die Liste hat 4 Elemente."
+    }
+  ]
+}
