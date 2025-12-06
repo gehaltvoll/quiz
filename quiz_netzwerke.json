@@ -1,0 +1,94 @@
+{
+  "title": "Netzwerk-Grundlagen Quiz",
+  "subtitle": "Testen Sie Ihr Wissen über Computer-Netzwerke",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Was bedeutet die Abkürzung IP?",
+      "answers": [
+        { "text": "Internet Provider", "correct": false },
+        { "text": "Internet Protocol", "correct": true },
+        { "text": "Internal Process", "correct": false },
+        { "text": "International Port", "correct": false }
+      ],
+      "explanation": "IP steht für Internet Protocol und ist die Grundlage der Internetkommunikation. Es regelt, wie Datenpakete über Netzwerke verschickt werden."
+    },
+    {
+      "id": 2,
+      "question": "Welche IP-Adresse ist eine private Adresse?",
+      "answers": [
+        { "text": "8.8.8.8", "correct": false },
+        { "text": "192.168.1.1", "correct": true },
+        { "text": "1.1.1.1", "correct": false },
+        { "text": "123.45.67.89", "correct": false }
+      ],
+      "explanation": "192.168.x.x ist ein privater IP-Bereich (RFC 1918) und wird in lokalen Netzwerken verwendet. Diese Adressen sind nicht im Internet routbar."
+    },
+    {
+      "id": 3,
+      "question": "Wie viele Bits hat eine IPv4-Adresse?",
+      "answers": [
+        { "text": "16 Bits", "correct": false },
+        { "text": "32 Bits", "correct": true },
+        { "text": "64 Bits", "correct": false },
+        { "text": "128 Bits", "correct": false }
+      ],
+      "explanation": "Eine IPv4-Adresse besteht aus 32 Bits, aufgeteilt in 4 Oktette à 8 Bits (z.B. 192.168.1.1). IPv6 hat dagegen 128 Bits."
+    },
+    {
+      "id": 4,
+      "question": "Was ist die Aufgabe eines Routers?",
+      "answers": [
+        { "text": "Dateien speichern", "correct": false },
+        { "text": "Netzwerke verbinden", "correct": true },
+        { "text": "Viren scannen", "correct": false },
+        { "text": "E-Mails versenden", "correct": false }
+      ],
+      "explanation": "Ein Router verbindet verschiedene Netzwerke miteinander und leitet Datenpakete zwischen ihnen weiter. Er arbeitet auf Layer 3 des OSI-Modells."
+    },
+    {
+      "id": 5,
+      "question": "Welches Protokoll wird für Webseiten verwendet?",
+      "answers": [
+        { "text": "FTP", "correct": false },
+        { "text": "HTTP/HTTPS", "correct": true },
+        { "text": "SMTP", "correct": false },
+        { "text": "SSH", "correct": false }
+      ],
+      "explanation": "HTTP (Hypertext Transfer Protocol) und HTTPS (die sichere Variante) werden für die Übertragung von Webseiten verwendet."
+    },
+    {
+      "id": 6,
+      "question": "Was bedeutet DHCP?",
+      "answers": [
+        { "text": "Dynamic Host Configuration Protocol", "correct": true },
+        { "text": "Digital Host Control Protocol", "correct": false },
+        { "text": "Direct HTTP Connection Protocol", "correct": false },
+        { "text": "Data Host Communication Protocol", "correct": false }
+      ],
+      "explanation": "DHCP (Dynamic Host Configuration Protocol) verteilt automatisch IP-Adressen an Geräte im Netzwerk."
+    },
+    {
+      "id": 7,
+      "question": "Welcher Port wird standardmässig für HTTPS verwendet?",
+      "answers": [
+        { "text": "80", "correct": false },
+        { "text": "443", "correct": true },
+        { "text": "22", "correct": false },
+        { "text": "8080", "correct": false }
+      ],
+      "explanation": "HTTPS verwendet standardmässig Port 443, während HTTP Port 80 verwendet."
+    },
+    {
+      "id": 8,
+      "question": "Was ist eine MAC-Adresse?",
+      "answers": [
+        { "text": "Eine IP-Adresse für Apple-Geräte", "correct": false },
+        { "text": "Eine eindeutige Hardware-Adresse", "correct": true },
+        { "text": "Eine verschlüsselte Netzwerkadresse", "correct": false },
+        { "text": "Eine temporäre Geräte-ID", "correct": false }
+      ],
+      "explanation": "Die MAC-Adresse (Media Access Control) ist eine eindeutige Hardware-Adresse, die jeder Netzwerkkarte vom Hersteller zugewiesen wird."
+    }
+  ]
+}

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatik Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Nord Color Scheme
+           Polar Night: #2E3440, #3B4252, #434C5E, #4C566A
+           Snow Storm:  #D8DEE9, #E5E9F0, #ECEFF4
+           Frost:       #8FBCBB, #88C0D0, #81A1C1, #5E81AC
+           Aurora:      #BF616A (red), #D08770 (orange), #EBCB8B (yellow), #A3BE8C (green), #B48EAD (purple)
+        */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #3B4252 0%, #2E3440 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        #root {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quiz-container {
+            background: #ECEFF4;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-title {
+            color: #5E81AC;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-subtitle {
+            color: #4C566A;
+            font-size: 1.1em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 40px;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #D8DEE9;
+            border-top: 6px solid #5E81AC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #4C566A;
+            font-size: 1.2em;
+        }
+        
+        .error-container {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .error-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            background: rgba(191, 97, 106, 0.15);
+            border: 2px solid #BF616A;
+            color: #BF616A;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .error-message h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            color: #BF616A;
+        }
+        
+        .error-message p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #3B4252;
+        }
+        
+        .error-message strong {
+            color: #BF616A;
+        }
+        
+        .instruction-box {
+            background: rgba(136, 192, 208, 0.2);
+            border: 2px solid #88C0D0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .instruction-box h4 {
+            color: #5E81AC;
+            margin-bottom: 10px;
+        }
+        
+        .instruction-box ol {
+            margin-left: 20px;
+            color: #3B4252;
+        }
+        
+        .instruction-box li {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        
+        .progress-bar {
+            background: #D8DEE9;
+            height: 12px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #81A1C1, #5E81AC);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background: #E5E9F0;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #5E81AC;
+        }
+        
+        .question-number {
+            color: #5E81AC;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.3em;
+            color: #2E3440;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .answers-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .answer-button {
+            background: #ECEFF4;
+            border: 3px solid #D8DEE9;
+            padding: 18px 25px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Open Sans', sans-serif;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2E3440;
+        }
+        
+        .answer-button:hover {
+            border-color: #81A1C1;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(94, 129, 172, 0.25);
+        }
+        
+        .answer-button.selected {
+            background: #5E81AC;
+            color: #ECEFF4;
+            border-color: #5E81AC;
+        }
+        
+        .answer-button.correct {
+            background: #A3BE8C;
+            color: #ECEFF4;
+            border-color: #A3BE8C;
+        }
+        
+        .answer-button.incorrect {
+            background: #BF616A;
+            color: #ECEFF4;
+            border-color: #BF616A;
+        }
+        
+        .answer-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .answer-letter {
+            background: #D8DEE9;
+            color: #4C566A;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .answer-button.selected .answer-letter,
+        .answer-button.correct .answer-letter,
+        .answer-button.incorrect .answer-letter {
+            background: rgba(236, 239, 244, 0.3);
+            color: #ECEFF4;
+        }
+        
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .feedback.correct {
+            background: rgba(163, 190, 140, 0.2);
+            border: 2px solid #A3BE8C;
+        }
+        
+        .feedback.incorrect {
+            background: rgba(191, 97, 106, 0.15);
+            border: 2px solid #BF616A;
+        }
+        
+        .feedback-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feedback.correct .feedback-title {
+            color: #A3BE8C;
+        }
+        
+        .feedback.incorrect .feedback-title {
+            color: #BF616A;
+        }
+        
+        .feedback p {
+            color: #3B4252;
+            line-height: 1.6;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #81A1C1 0%, #5E81AC 100%);
+            color: #ECEFF4;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 129, 172, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .results-card {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .results-score {
+            font-size: 5em;
+            font-weight: bold;
+            color: #5E81AC;
+            margin: 20px 0;
+        }
+        
+        .results-message {
+            font-size: 1.8em;
+            color: #2E3440;
+            margin-bottom: 30px;
+        }
+        
+        .results-details {
+            background: #E5E9F0;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .results-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #D8DEE9;
+        }
+        
+        .results-stat:last-child {
+            border-bottom: none;
+        }
+        
+        .results-label {
+            color: #4C566A;
+        }
+        
+        .results-value {
+            font-weight: bold;
+            color: #2E3440;
+        }
+        
+        .file-info {
+            background: rgba(136, 192, 208, 0.2);
+            border: 1px solid #88C0D0;
+            color: #5E81AC;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .file-info strong {
+            color: #4C566A;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        function QuizApp() {
+            const [quizData, setQuizData] = React.useState(null);
+            const [currentQuestion, setCurrentQuestion] = React.useState(0);
+            const [selectedAnswer, setSelectedAnswer] = React.useState(null);
+            const [showFeedback, setShowFeedback] = React.useState(false);
+            const [score, setScore] = React.useState(0);
+            const [quizCompleted, setQuizCompleted] = React.useState(false);
+            const [loading, setLoading] = React.useState(true);
+            const [error, setError] = React.useState(null);
+
+            // Get filename from URL parameter or use default
+            const urlParams = new URLSearchParams(window.location.search);
+            const fileName = urlParams.get('file') || 'quiz_data.json';
+
+            React.useEffect(() => {
+                loadQuizData();
+            }, []);
+
+            const loadQuizData = async () => {
+                try {
+                    const response = await fetch(fileName);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Datei "${fileName}" nicht gefunden (HTTP ${response.status})`);
+                    }
+
+                    const text = await response.text();
+                    
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (parseError) {
+                        throw new Error(`JSON-Syntaxfehler in "${fileName}": ${parseError.message}`);
+                    }
+
+                    // Validate structure
+                    if (!data.questions || !Array.isArray(data.questions)) {
+                        throw new Error('Ungültiges Format: "questions" Array fehlt');
+                    }
+
+                    if (data.questions.length === 0) {
+                        throw new Error('Keine Fragen in der Datei gefunden');
+                    }
+
+                    setQuizData(data);
+                    setLoading(false);
+                } catch (err) {
+                    setError(err.message);
+                    setLoading(false);
+                }
+            };
+
+            const resetQuiz = () => {
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setShowFeedback(false);
+                setScore(0);
+                setQuizCompleted(false);
+            };
+
+            // Loading State
+            if (loading) {
+                return (
+                    <div className="quiz-container">
+                        <div className="loading">
+                            <div className="loading-spinner"></div>
+                            <div className="loading-text">Quiz wird geladen...</div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Error State
+            if (error) {
+                return (
+                    <div className="quiz-container">
+                        <div className="error-container">
+                            <div className="error-icon">⚠️</div>
+                            <div className="error-message">
+                                <h3>Quiz konnte nicht geladen werden</h3>
+                                <p><strong>Fehler:</strong> {error}</p>
+                                <p><strong>Gesuchte Datei:</strong> {fileName}</p>
+                            </div>
+                            
+                            <div className="instruction-box">
+                                <h4>💡 So beheben Sie das Problem:</h4>
+                                <ol>
+                                    <li>Stellen Sie sicher, dass die Datei <strong>{fileName}</strong> im gleichen Ordner wie diese HTML-Datei liegt</li>
+                                    <li>Prüfen Sie, ob der Dateiname exakt übereinstimmt (Gross-/Kleinschreibung beachten!)</li>
+                                    <li>Öffnen Sie die JSON-Datei und prüfen Sie auf Fehler (z.B. mit jsonlint.com)</li>
+                                    <li>Versuchen Sie es mit einer anderen JSON-Datei: <code>quiz_app_auto.html?file=ihre_datei.json</code></li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            const question = quizData.questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
+
+            const handleAnswerClick = (index) => {
+                if (showFeedback) return;
+                setSelectedAnswer(index);
+            };
+
+            const handleSubmit = () => {
+                if (selectedAnswer === null) return;
+                
+                setShowFeedback(true);
+                const isCorrect = question.answers[selectedAnswer].correct;
+                
+                if (isCorrect) {
+                    setScore(score + 1);
+                }
+            };
+
+            const handleNext = () => {
+                if (currentQuestion < quizData.questions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    setSelectedAnswer(null);
+                    setShowFeedback(false);
+                } else {
+                    setQuizCompleted(true);
+                }
+            };
+
+            // Results Screen
+            if (quizCompleted) {
+                const percentage = Math.round((score / quizData.questions.length) * 100);
+                let message = "";
+                let emoji = "";
+                
+                if (percentage >= 90) {
+                    message = "Ausgezeichnet!";
+                    emoji = "🏆";
+                } else if (percentage >= 70) {
+                    message = "Sehr gut!";
+                    emoji = "🎉";
+                } else if (percentage >= 50) {
+                    message = "Gut gemacht!";
+                    emoji = "👍";
+                } else {
+                    message = "Weiter üben!";
+                    emoji = "💪";
+                }
+
+                return (
+                    <div className="quiz-container">
+                        <div className="results-card">
+                            <h1 className="quiz-title">{emoji} Quiz abgeschlossen!</h1>
+                            <div className="results-score">{percentage}%</div>
+                            <div className="results-message">{message}</div>
+                            
+                            <div className="results-details">
+                                <div className="results-stat">
+                                    <span className="results-label">Richtige Antworten:</span>
+                                    <span className="results-value">{score} von {quizData.questions.length}</span>
+                                </div>
+                                <div className="results-stat">
+                                    <span className="results-label">Falsche Antworten:</span>
+                                    <span className="results-value">{quizData.questions.length - score}</span>
+                                </div>
+                                <div className="results-stat">
+                                    <span className="results-label">Erfolgsquote:</span>
+                                    <span className="results-value">{percentage}%</span>
+                                </div>
+                            </div>
+                            
+                            <div className="control-buttons">
+                                <button className="btn btn-primary" onClick={resetQuiz}>
+                                    🔄 Nochmal versuchen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Quiz Screen
+            return (
+                <div className="quiz-container">
+                    <div className="quiz-header">
+                        <h1 className="quiz-title">{quizData.title}</h1>
+                        <p className="quiz-subtitle">{quizData.subtitle}</p>
+                    </div>
+
+                    <div className="file-info">
+                        📁 Geladene Datei: <strong>{fileName}</strong>
+                    </div>
+
+                    <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                    </div>
+
+                    <div className="question-card">
+                        <div className="question-number">
+                            Frage {currentQuestion + 1} von {quizData.questions.length}
+                        </div>
+                        <div className="question-text">
+                            {question.question}
+                        </div>
+
+                        <div className="answers-grid">
+                            {question.answers.map((answer, index) => {
+                                let className = "answer-button";
+                                
+                                if (showFeedback) {
+                                    if (answer.correct) {
+                                        className += " correct";
+                                    } else if (selectedAnswer === index) {
+                                        className += " incorrect";
+                                    }
+                                } else if (selectedAnswer === index) {
+                                    className += " selected";
+                                }
+
+                                return (
+                                    <button
+                                        key={index}
+                                        className={className}
+                                        onClick={() => handleAnswerClick(index)}
+                                        disabled={showFeedback}
+                                    >
+                                        <span className="answer-letter">
+                                            {String.fromCharCode(65 + index)}
+                                        </span>
+                                        <span>{answer.text}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {showFeedback && (
+                            <div className={`feedback ${question.answers[selectedAnswer].correct ? 'correct' : 'incorrect'}`}>
+                                <div className="feedback-title">
+                                    <span>
+                                        {question.answers[selectedAnswer].correct ? '✅' : '❌'}
+                                    </span>
+                                    {question.answers[selectedAnswer].correct ? 'Richtig!' : 'Leider falsch'}
+                                </div>
+                                <p>{question.explanation}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="control-buttons">
+                        {!showFeedback ? (
+                            <button 
+                                className="btn btn-primary" 
+                                onClick={handleSubmit}
+                                disabled={selectedAnswer === null}
+                            >
+                                Antwort prüfen
+                            </button>
+                        ) : (
+                            <button className="btn btn-primary" onClick={handleNext}>
+                                {currentQuestion < quizData.questions.length - 1 ? 'Nächste Frage →' : 'Ergebnis anzeigen'}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<QuizApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
