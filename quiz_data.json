@@ -6,7 +6,7 @@
       "id": 1,
       "question": "Was gibt der folgende Code aus? print(5 + 3 * 2)",
       "answers": [
-        { "text": "16", "correct": true },
+        { "text": "16", "correct": false },
         { "text": "11", "correct": true },
         { "text": "13", "correct": false },
         { "text": "Fehler", "correct": false }
