@@ -4,58 +4,92 @@
   "questions": [
     {
       "id": 1,
-      "question": "Was gibt der folgende Code aus? print(5 + 3 * 2)",
+      "question": "Was gibt der folgende Code aus?",
+      "code": "x = 5\ny = 3\nprint(x + y * 2)",
+      "codeLanguage": "python",
       "answers": [
         { "text": "16", "correct": false },
         { "text": "11", "correct": true },
         { "text": "13", "correct": false },
         { "text": "Fehler", "correct": false }
       ],
-      "explanation": "Die Multiplikation wird vor der Addition ausgeführt (Punkt vor Strich): 3 * 2 = 6, dann 5 + 6 = 11"
+      "explanation": "Die Multiplikation wird vor der Addition ausgeführt (Punkt vor Strich): `y * 2 = 6`, dann `x + 6 = 11`"
     },
     {
       "id": 2,
-      "question": "Welcher Datentyp ist das Ergebnis von: type('Hallo')",
+      "question": "Was ist die Ausgabe dieses Programms?",
+      "code": "fruits = ['Apfel', 'Birne', 'Kirsche']\nfor i, fruit in enumerate(fruits):\n    print(f'{i}: {fruit}')",
+      "codeLanguage": "python",
       "answers": [
-        { "text": "int", "correct": false },
-        { "text": "str", "correct": true },
-        { "text": "float", "correct": false },
-        { "text": "bool", "correct": false }
+        { "text": "`1: Apfel`, `2: Birne`, `3: Kirsche`", "correct": false },
+        { "text": "`0: Apfel`, `1: Birne`, `2: Kirsche`", "correct": true },
+        { "text": "`Apfel`, `Birne`, `Kirsche`", "correct": false },
+        { "text": "Ein Fehler tritt auf", "correct": false }
       ],
-      "explanation": "Texte in Anführungszeichen sind vom Typ 'str' (String)."
+      "explanation": "`enumerate()` gibt Tupel von (Index, Wert) zurück, wobei der Index bei 0 beginnt."
     },
     {
       "id": 3,
-      "question": "Was macht die range(5) Funktion?",
+      "question": "Welchen Wert hat `result` nach Ausführung des Codes?",
+      "code": "def calculate(a, b=10):\n    return a * b\n\nresult = calculate(5)",
+      "codeLanguage": "python",
       "answers": [
-        { "text": "Erstellt die Liste [1, 2, 3, 4, 5]", "correct": false },
-        { "text": "Erstellt die Liste [0, 1, 2, 3, 4]", "correct": true },
-        { "text": "Gibt die Zahl 5 zurück", "correct": false },
-        { "text": "Zählt von 5 bis 0", "correct": false }
+        { "text": "5", "correct": false },
+        { "text": "10", "correct": false },
+        { "text": "50", "correct": true },
+        { "text": "Fehler - Parameter fehlt", "correct": false }
       ],
-      "explanation": "range(5) erzeugt die Zahlen von 0 bis 4 (insgesamt 5 Zahlen, aber die 5 ist nicht dabei)."
+      "explanation": "Der Parameter `b` hat einen Standardwert von 10. Da nur `a=5` übergeben wird, ist das Ergebnis `5 * 10 = 50`."
     },
     {
       "id": 4,
-      "question": "Welches Schlüsselwort wird verwendet, um eine Funktion zu definieren?",
+      "question": "Was ist das Ergebnis der folgenden List Comprehension?",
+      "code": "numbers = [1, 2, 3, 4, 5]\nresult = [x ** 2 for x in numbers if x % 2 == 0]",
+      "codeLanguage": "python",
       "answers": [
-        { "text": "function", "correct": false },
-        { "text": "def", "correct": true },
-        { "text": "func", "correct": false },
-        { "text": "define", "correct": false }
+        { "text": "`[1, 4, 9, 16, 25]`", "correct": false },
+        { "text": "`[4, 16]`", "correct": true },
+        { "text": "`[2, 4]`", "correct": false },
+        { "text": "`[1, 9, 25]`", "correct": false }
       ],
-      "explanation": "In Python wird 'def' verwendet: def meine_funktion():"
+      "explanation": "Die List Comprehension filtert zuerst gerade Zahlen (`x % 2 == 0` → 2 und 4) und quadriert sie dann: `2² = 4` und `4² = 16`."
     },
     {
       "id": 5,
-      "question": "Was ist das Ergebnis von: len([1, 2, 3, 4])?",
+      "question": "Was gibt dieser Code aus?",
+      "code": "class Dog:\n    def __init__(self, name):\n        self.name = name\n    \n    def speak(self):\n        return f'{self.name} sagt Wuff!'\n\nrex = Dog('Rex')\nprint(rex.speak())",
+      "codeLanguage": "python",
       "answers": [
-        { "text": "3", "correct": false },
-        { "text": "4", "correct": true },
-        { "text": "10", "correct": false },
-        { "text": "[1, 2, 3, 4]", "correct": false }
+        { "text": "`Dog sagt Wuff!`", "correct": false },
+        { "text": "`Rex sagt Wuff!`", "correct": true },
+        { "text": "`name sagt Wuff!`", "correct": false },
+        { "text": "Fehler", "correct": false }
       ],
-      "explanation": "len() gibt die Anzahl der Elemente in einer Liste zurück. Die Liste hat 4 Elemente."
+      "explanation": "Der Konstruktor `__init__` speichert 'Rex' in `self.name`. Die `speak()`-Methode verwendet diesen Wert im f-String."
+    },
+    {
+      "id": 6,
+      "question": "Welcher Datentyp ist das Ergebnis von `type('Hallo')`?",
+      "answers": [
+        { "text": "`int`", "correct": false },
+        { "text": "`str`", "correct": true },
+        { "text": "`float`", "correct": false },
+        { "text": "`bool`", "correct": false }
+      ],
+      "explanation": "Texte in Anführungszeichen sind vom Typ `str` (String)."
+    },
+    {
+      "id": 7,
+      "question": "Was passiert bei diesem Code?",
+      "code": "try:\n    x = 10 / 0\nexcept ZeroDivisionError:\n    print('Nicht durch Null teilen!')\nfinally:\n    print('Fertig')",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "Nur `Nicht durch Null teilen!` wird ausgegeben", "correct": false },
+        { "text": "Nur `Fertig` wird ausgegeben", "correct": false },
+        { "text": "Beide Nachrichten werden ausgegeben", "correct": true },
+        { "text": "Das Programm stürzt ab", "correct": false }
+      ],
+      "explanation": "Der `except`-Block fängt die Division durch Null ab, und der `finally`-Block wird immer ausgeführt, egal ob ein Fehler auftrat oder nicht."
     }
   ]
 }

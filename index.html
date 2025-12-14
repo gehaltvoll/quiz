@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatik Quiz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #3B4252 0%, #2E3440 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        #root {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .quiz-container {
+            background: #ECEFF4;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-title {
+            color: #5E81AC;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-subtitle {
+            color: #4C566A;
+            font-size: 1.1em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 40px;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid #D8DEE9;
+            border-top: 6px solid #5E81AC;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #4C566A;
+            font-size: 1.2em;
+        }
+        
+        /* File Upload Fallback */
+        .upload-fallback {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .upload-fallback h2 {
+            color: #5E81AC;
+            margin-bottom: 15px;
+        }
+        
+        .upload-fallback p {
+            color: #4C566A;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .upload-area {
+            border: 3px dashed #81A1C1;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            background: rgba(136, 192, 208, 0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: #5E81AC;
+            background: rgba(136, 192, 208, 0.2);
+        }
+        
+        .upload-area.dragover {
+            border-color: #A3BE8C;
+            background: rgba(163, 190, 140, 0.2);
+        }
+        
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #4C566A;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            color: #81A1C1;
+            font-size: 0.9em;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .info-box {
+            background: rgba(136, 192, 208, 0.2);
+            border: 2px solid #88C0D0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: left;
+        }
+        
+        .info-box h4 {
+            color: #5E81AC;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            color: #3B4252;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .info-box code {
+            background: #D8DEE9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            background: #D8DEE9;
+            height: 12px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #81A1C1, #5E81AC);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-card {
+            background: #E5E9F0;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #5E81AC;
+        }
+        
+        .question-number {
+            color: #5E81AC;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .question-text {
+            font-size: 1.3em;
+            color: #2E3440;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .question-text code {
+            background: #D8DEE9;
+            color: #5E81AC;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
+        .code-block-container {
+            margin: 15px 0 25px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .code-block-header {
+            background: #3B4252;
+            color: #D8DEE9;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .code-block-header .lang-icon {
+            width: 16px;
+            height: 16px;
+            background: #88C0D0;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #2E3440;
+            font-weight: bold;
+        }
+        
+        .code-block {
+            background: #2E3440;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #ECEFF4;
+            white-space: pre;
+            tab-size: 4;
+        }
+        
+        .answers-grid {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .answer-button {
+            background: #ECEFF4;
+            border: 3px solid #D8DEE9;
+            padding: 18px 25px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Open Sans', sans-serif;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #2E3440;
+        }
+        
+        .answer-button:hover {
+            border-color: #81A1C1;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(94, 129, 172, 0.25);
+        }
+        
+        .answer-button.selected {
+            background: #5E81AC;
+            color: #ECEFF4;
+            border-color: #5E81AC;
+        }
+        
+        .answer-button.correct {
+            background: #A3BE8C;
+            color: #ECEFF4;
+            border-color: #A3BE8C;
+        }
+        
+        .answer-button.incorrect {
+            background: #BF616A;
+            color: #ECEFF4;
+            border-color: #BF616A;
+        }
+        
+        .answer-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .answer-button code {
+            background: rgba(46, 52, 64, 0.15);
+            color: inherit;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
+        .answer-button.selected code,
+        .answer-button.correct code,
+        .answer-button.incorrect code {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .answer-letter {
+            background: #D8DEE9;
+            color: #4C566A;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .answer-button.selected .answer-letter,
+        .answer-button.correct .answer-letter,
+        .answer-button.incorrect .answer-letter {
+            background: rgba(236, 239, 244, 0.3);
+            color: #ECEFF4;
+        }
+        
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        
+        .feedback.correct {
+            background: rgba(163, 190, 140, 0.2);
+            border: 2px solid #A3BE8C;
+        }
+        
+        .feedback.incorrect {
+            background: rgba(191, 97, 106, 0.15);
+            border: 2px solid #BF616A;
+        }
+        
+        .feedback-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feedback.correct .feedback-title {
+            color: #A3BE8C;
+        }
+        
+        .feedback.incorrect .feedback-title {
+            color: #BF616A;
+        }
+        
+        .feedback p {
+            color: #3B4252;
+            line-height: 1.6;
+        }
+        
+        .feedback code {
+            background: rgba(46, 52, 64, 0.1);
+            color: #5E81AC;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #81A1C1 0%, #5E81AC 100%);
+            color: #ECEFF4;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 129, 172, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-secondary {
+            background: #E5E9F0;
+            color: #4C566A;
+            border: 2px solid #D8DEE9;
+        }
+        
+        .btn-secondary:hover {
+            background: #D8DEE9;
+        }
+        
+        .results-card {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .results-score {
+            font-size: 5em;
+            font-weight: bold;
+            color: #5E81AC;
+            margin: 20px 0;
+        }
+        
+        .results-message {
+            font-size: 1.8em;
+            color: #2E3440;
+            margin-bottom: 30px;
+        }
+        
+        .results-details {
+            background: #E5E9F0;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .results-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #D8DEE9;
+        }
+        
+        .results-stat:last-child {
+            border-bottom: none;
+        }
+        
+        .results-label {
+            color: #4C566A;
+        }
+        
+        .results-value {
+            font-weight: bold;
+            color: #2E3440;
+        }
+        
+        .error-message {
+            background: rgba(191, 97, 106, 0.15);
+            border: 2px solid #BF616A;
+            color: #BF616A;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .error-message h4 {
+            margin-bottom: 10px;
+        }
+        
+        .loaded-info {
+            background: rgba(163, 190, 140, 0.15);
+            border: 2px solid #A3BE8C;
+            color: #2E3440;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95em;
+        }
+        
+        .loaded-info .icon {
+            color: #A3BE8C;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        // =====================================================
+        // KONFIGURATION
+        // =====================================================
+        // Dateiname der JSON-Datei (muss im gleichen Ordner sein)
+        const JSON_FILENAME = 'quiz_data.json';
+        // =====================================================
+
+        function CodeBlock({ code, language }) {
+            const langIcon = {
+                'python': 'Py', 'javascript': 'JS', 'java': 'Ja',
+                'c': 'C', 'cpp': 'C+', 'csharp': 'C#', 'html': '<>',
+                'css': '#', 'sql': 'DB', 'bash': '$', 'code': '{ }'
+            };
+            
+            return (
+                <div className="code-block-container">
+                    <div className="code-block-header">
+                        <span className="lang-icon">{langIcon[language] || '{ }'}</span>
+                        <span>{language || 'code'}</span>
+                    </div>
+                    <div className="code-block">
+                        <pre><code>{code}</code></pre>
+                    </div>
+                </div>
+            );
+        }
+
+        function renderTextWithCode(text) {
+            if (!text) return null;
+            const parts = text.split(/(`[^`]+`)/g);
+            return parts.map((part, index) => {
+                if (part.startsWith('`') && part.endsWith('`')) {
+                    return <code key={index}>{part.slice(1, -1)}</code>;
+                }
+                return <span key={index}>{part}</span>;
+            });
+        }
+
+        function QuizApp() {
+            const [quizData, setQuizData] = React.useState(null);
+            const [loadedFrom, setLoadedFrom] = React.useState(null);
+            const [currentQuestion, setCurrentQuestion] = React.useState(0);
+            const [selectedAnswer, setSelectedAnswer] = React.useState(null);
+            const [showFeedback, setShowFeedback] = React.useState(false);
+            const [score, setScore] = React.useState(0);
+            const [quizCompleted, setQuizCompleted] = React.useState(false);
+            const [loading, setLoading] = React.useState(true);
+            const [needsManualUpload, setNeedsManualUpload] = React.useState(false);
+            const [error, setError] = React.useState(null);
+            const [dragOver, setDragOver] = React.useState(false);
+            
+            const fileInputRef = React.useRef(null);
+
+            // Versuche automatisch die JSON zu laden
+            React.useEffect(() => {
+                loadQuizFromFile();
+            }, []);
+
+            const loadQuizFromFile = async () => {
+                setLoading(true);
+                setError(null);
+                
+                // URL-Parameter prüfen (optional: ?file=andere_datei.json)
+                const urlParams = new URLSearchParams(window.location.search);
+                const fileName = urlParams.get('file') || JSON_FILENAME;
+                
+                try {
+                    const response = await fetch(fileName);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    validateAndSetQuizData(data, fileName);
+                    
+                } catch (err) {
+                    // Fetch fehlgeschlagen - wahrscheinlich lokales Öffnen ohne Server
+                    console.log('Auto-load failed:', err.message);
+                    setNeedsManualUpload(true);
+                    setLoading(false);
+                }
+            };
+
+            const validateAndSetQuizData = (data, source) => {
+                if (!data.questions || !Array.isArray(data.questions)) {
+                    throw new Error('Ungültiges Format: "questions" Array fehlt');
+                }
+                if (data.questions.length === 0) {
+                    throw new Error('Keine Fragen in der Datei gefunden');
+                }
+                
+                setQuizData(data);
+                setLoadedFrom(source);
+                setLoading(false);
+                setNeedsManualUpload(false);
+                setError(null);
+            };
+
+            const handleFileSelect = (file) => {
+                if (!file) return;
+                
+                if (!file.name.endsWith('.json')) {
+                    setError('Bitte wähle eine JSON-Datei aus.');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        validateAndSetQuizData(data, file.name);
+                        resetQuizState();
+                    } catch (err) {
+                        setError(`JSON-Fehler: ${err.message}`);
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            const handleDrop = (e) => {
+                e.preventDefault();
+                setDragOver(false);
+                handleFileSelect(e.dataTransfer.files[0]);
+            };
+
+            const resetQuizState = () => {
+                setCurrentQuestion(0);
+                setSelectedAnswer(null);
+                setShowFeedback(false);
+                setScore(0);
+                setQuizCompleted(false);
+            };
+
+            const handleAnswerClick = (index) => {
+                if (showFeedback) return;
+                setSelectedAnswer(index);
+            };
+
+            const handleSubmit = () => {
+                if (selectedAnswer === null) return;
+                setShowFeedback(true);
+                if (quizData.questions[currentQuestion].answers[selectedAnswer].correct) {
+                    setScore(score + 1);
+                }
+            };
+
+            const handleNext = () => {
+                if (currentQuestion < quizData.questions.length - 1) {
+                    setCurrentQuestion(currentQuestion + 1);
+                    setSelectedAnswer(null);
+                    setShowFeedback(false);
+                } else {
+                    setQuizCompleted(true);
+                }
+            };
+
+            // Loading
+            if (loading) {
+                return (
+                    <div className="quiz-container">
+                        <div className="loading">
+                            <div className="loading-spinner"></div>
+                            <div className="loading-text">Quiz wird geladen...</div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Manual Upload erforderlich (lokales Öffnen ohne Server)
+            if (needsManualUpload && !quizData) {
+                return (
+                    <div className="quiz-container">
+                        <div className="upload-fallback">
+                            <h2>📁 Quiz-Datei laden</h2>
+                            <p>
+                                Die Datei <code>{JSON_FILENAME}</code> konnte nicht automatisch geladen werden.<br/>
+                                Bitte wähle die JSON-Datei manuell aus:
+                            </p>
+                            
+                            <div 
+                                className={`upload-area ${dragOver ? 'dragover' : ''}`}
+                                onClick={() => fileInputRef.current?.click()}
+                                onDrop={handleDrop}
+                                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                                onDragLeave={() => setDragOver(false)}
+                            >
+                                <div className="upload-icon">📄</div>
+                                <div className="upload-text">
+                                    JSON-Datei hierher ziehen oder klicken
+                                </div>
+                                <div className="upload-hint">
+                                    z.B. {JSON_FILENAME}
+                                </div>
+                                <input 
+                                    ref={fileInputRef}
+                                    type="file" 
+                                    accept=".json"
+                                    className="file-input"
+                                    onChange={(e) => handleFileSelect(e.target.files[0])}
+                                />
+                            </div>
+                            
+                            {error && (
+                                <div className="error-message">
+                                    <h4>⚠️ Fehler</h4>
+                                    <p>{error}</p>
+                                </div>
+                            )}
+                            
+                            <div className="info-box">
+                                <h4>💡 Tipp: Automatisches Laden aktivieren</h4>
+                                <p>
+                                    Um die JSON-Datei automatisch zu laden, starte einen lokalen Server:
+                                </p>
+                                <p>
+                                    <code>python -m http.server 8000</code>
+                                </p>
+                                <p>
+                                    Dann öffne: <code>http://localhost:8000/quiz_app.html</code>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Results
+            if (quizCompleted) {
+                const percentage = Math.round((score / quizData.questions.length) * 100);
+                let message, emoji;
+                
+                if (percentage >= 90) { message = "Ausgezeichnet!"; emoji = "🏆"; }
+                else if (percentage >= 70) { message = "Sehr gut!"; emoji = "🎉"; }
+                else if (percentage >= 50) { message = "Gut gemacht!"; emoji = "👍"; }
+                else { message = "Weiter üben!"; emoji = "💪"; }
+
+                return (
+                    <div className="quiz-container">
+                        <div className="results-card">
+                            <h1 className="quiz-title">{emoji} Quiz abgeschlossen!</h1>
+                            <div className="results-score">{percentage}%</div>
+                            <div className="results-message">{message}</div>
+                            
+                            <div className="results-details">
+                                <div className="results-stat">
+                                    <span className="results-label">Richtige Antworten:</span>
+                                    <span className="results-value">{score} von {quizData.questions.length}</span>
+                                </div>
+                                <div className="results-stat">
+                                    <span className="results-label">Falsche Antworten:</span>
+                                    <span className="results-value">{quizData.questions.length - score}</span>
+                                </div>
+                            </div>
+                            
+                            <div className="control-buttons">
+                                <button className="btn btn-primary" onClick={resetQuizState}>
+                                    🔄 Nochmal versuchen
+                                </button>
+                                <button 
+                                    className="btn btn-secondary" 
+                                    onClick={() => fileInputRef.current?.click()}
+                                >
+                                    📁 Andere Datei
+                                </button>
+                                <input 
+                                    ref={fileInputRef}
+                                    type="file" 
+                                    accept=".json"
+                                    className="file-input"
+                                    onChange={(e) => handleFileSelect(e.target.files[0])}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Quiz
+            const question = quizData.questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
+
+            return (
+                <div className="quiz-container">
+                    <div className="quiz-header">
+                        <h1 className="quiz-title">{quizData.title}</h1>
+                        <p className="quiz-subtitle">{quizData.subtitle}</p>
+                    </div>
+                    
+                    {loadedFrom && (
+                        <div className="loaded-info">
+                            <span className="icon">✓</span>
+                            <span>Geladen: {loadedFrom} ({quizData.questions.length} Fragen)</span>
+                        </div>
+                    )}
+
+                    <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                    </div>
+
+                    <div className="question-card">
+                        <div className="question-number">
+                            Frage {currentQuestion + 1} von {quizData.questions.length}
+                        </div>
+                        <div className="question-text">
+                            {renderTextWithCode(question.question)}
+                        </div>
+                        
+                        {question.code && (
+                            <CodeBlock code={question.code} language={question.codeLanguage} />
+                        )}
+
+                        <div className="answers-grid">
+                            {question.answers.map((answer, index) => {
+                                let className = "answer-button";
+                                if (showFeedback) {
+                                    if (answer.correct) className += " correct";
+                                    else if (selectedAnswer === index) className += " incorrect";
+                                } else if (selectedAnswer === index) {
+                                    className += " selected";
+                                }
+
+                                return (
+                                    <button
+                                        key={index}
+                                        className={className}
+                                        onClick={() => handleAnswerClick(index)}
+                                        disabled={showFeedback}
+                                    >
+                                        <span className="answer-letter">
+                                            {String.fromCharCode(65 + index)}
+                                        </span>
+                                        <span>{renderTextWithCode(answer.text)}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
+                        {showFeedback && (
+                            <div className={`feedback ${question.answers[selectedAnswer].correct ? 'correct' : 'incorrect'}`}>
+                                <div className="feedback-title">
+                                    <span>{question.answers[selectedAnswer].correct ? '✅' : '❌'}</span>
+                                    {question.answers[selectedAnswer].correct ? 'Richtig!' : 'Leider falsch'}
+                                </div>
+                                <p>{renderTextWithCode(question.explanation)}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="control-buttons">
+                        {!showFeedback ? (
+                            <button 
+                                className="btn btn-primary" 
+                                onClick={handleSubmit}
+                                disabled={selectedAnswer === null}
+                            >
+                                Antwort prüfen
+                            </button>
+                        ) : (
+                            <button className="btn btn-primary" onClick={handleNext}>
+                                {currentQuestion < quizData.questions.length - 1 ? 'Nächste Frage →' : 'Ergebnis anzeigen'}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<QuizApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
