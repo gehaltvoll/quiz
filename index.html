@@ -77,7 +77,6 @@
             font-size: 1.2em;
         }
         
-        /* File Upload Fallback */
         .upload-fallback {
             text-align: center;
             padding: 20px;
@@ -163,12 +162,16 @@
             font-size: 0.9em;
         }
         
+        .progress-section {
+            margin-bottom: 25px;
+        }
+        
         .progress-bar {
             background: #D8DEE9;
             height: 12px;
             border-radius: 20px;
             overflow: hidden;
-            margin-bottom: 30px;
+            margin-bottom: 12px;
         }
         
         .progress-fill {
@@ -177,12 +180,43 @@
             transition: width 0.3s ease;
         }
         
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4C566A;
+            font-size: 0.95em;
+        }
+        
+        .stat-icon {
+            font-size: 1.1em;
+        }
+        
+        .stat-value {
+            font-weight: 600;
+            color: #2E3440;
+        }
+        
+        .stat-item.answered .stat-value {
+            color: #A3BE8C;
+        }
+        
+        .stat-item.remaining .stat-value {
+            color: #5E81AC;
+        }
+        
         .question-card {
             background: #E5E9F0;
             padding: 30px;
             border-radius: 15px;
             margin-bottom: 30px;
-            border-left: 5px solid #5E81AC;
         }
         
         .question-number {
@@ -288,23 +322,6 @@
             border-color: #5E81AC;
         }
         
-        .answer-button.correct {
-            background: #A3BE8C;
-            color: #ECEFF4;
-            border-color: #A3BE8C;
-        }
-        
-        .answer-button.incorrect {
-            background: #BF616A;
-            color: #ECEFF4;
-            border-color: #BF616A;
-        }
-        
-        .answer-button:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
         .answer-button code {
             background: rgba(46, 52, 64, 0.15);
             color: inherit;
@@ -314,9 +331,7 @@
             font-size: 0.9em;
         }
         
-        .answer-button.selected code,
-        .answer-button.correct code,
-        .answer-button.incorrect code {
+        .answer-button.selected code {
             background: rgba(255, 255, 255, 0.2);
         }
         
@@ -333,58 +348,9 @@
             flex-shrink: 0;
         }
         
-        .answer-button.selected .answer-letter,
-        .answer-button.correct .answer-letter,
-        .answer-button.incorrect .answer-letter {
+        .answer-button.selected .answer-letter {
             background: rgba(236, 239, 244, 0.3);
             color: #ECEFF4;
-        }
-        
-        .feedback {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 12px;
-        }
-        
-        .feedback.correct {
-            background: rgba(163, 190, 140, 0.2);
-            border: 2px solid #A3BE8C;
-        }
-        
-        .feedback.incorrect {
-            background: rgba(191, 97, 106, 0.15);
-            border: 2px solid #BF616A;
-        }
-        
-        .feedback-title {
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .feedback.correct .feedback-title {
-            color: #A3BE8C;
-        }
-        
-        .feedback.incorrect .feedback-title {
-            color: #BF616A;
-        }
-        
-        .feedback p {
-            color: #3B4252;
-            line-height: 1.6;
-        }
-        
-        .feedback code {
-            background: rgba(46, 52, 64, 0.1);
-            color: #5E81AC;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Fira Code', 'Consolas', monospace;
-            font-size: 0.9em;
         }
         
         .control-buttons {
@@ -434,7 +400,7 @@
         
         .results-card {
             text-align: center;
-            padding: 40px;
+            padding: 30px 0;
         }
         
         .results-score {
@@ -450,7 +416,7 @@
             margin-bottom: 30px;
         }
         
-        .results-details {
+        .results-summary {
             background: #E5E9F0;
             padding: 25px;
             border-radius: 15px;
@@ -477,6 +443,168 @@
             color: #2E3440;
         }
         
+        .review-section {
+            margin-top: 40px;
+            text-align: left;
+        }
+        
+        .review-title {
+            color: #5E81AC;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .review-question {
+            background: #E5E9F0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .review-question.correct {
+            border-left: 5px solid #A3BE8C;
+        }
+        
+        .review-question.incorrect {
+            border-left: 5px solid #BF616A;
+        }
+        
+        .review-question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .review-question-number {
+            color: #5E81AC;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .review-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .review-status.correct {
+            background: rgba(163, 190, 140, 0.2);
+            color: #A3BE8C;
+        }
+        
+        .review-status.incorrect {
+            background: rgba(191, 97, 106, 0.15);
+            color: #BF616A;
+        }
+        
+        .review-question-text {
+            font-size: 1.1em;
+            color: #2E3440;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .review-question-text code {
+            background: #D8DEE9;
+            color: #5E81AC;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
+        .review-answers {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .review-answer {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ECEFF4;
+            color: #4C566A;
+        }
+        
+        .review-answer.user-wrong {
+            background: #BF616A;
+            color: #ECEFF4;
+        }
+        
+        .review-answer.correct-answer {
+            background: #A3BE8C;
+            color: #ECEFF4;
+        }
+        
+        .review-answer code {
+            background: rgba(46, 52, 64, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
+        .review-answer.user-wrong code,
+        .review-answer.correct-answer code {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .review-answer-letter {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            background: rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        
+        .review-answer-marker {
+            margin-left: auto;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .review-explanation {
+            background: rgba(136, 192, 208, 0.2);
+            border: 1px solid #88C0D0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .review-explanation-title {
+            color: #5E81AC;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .review-explanation p {
+            color: #3B4252;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        .review-explanation code {
+            background: #D8DEE9;
+            color: #5E81AC;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        
         .error-message {
             background: rgba(191, 97, 106, 0.15);
             border: 2px solid #BF616A;
@@ -489,24 +617,6 @@
         .error-message h4 {
             margin-bottom: 10px;
         }
-        
-        .loaded-info {
-            background: rgba(163, 190, 140, 0.15);
-            border: 2px solid #A3BE8C;
-            color: #2E3440;
-            padding: 12px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95em;
-        }
-        
-        .loaded-info .icon {
-            color: #A3BE8C;
-            font-size: 1.2em;
-        }
     </style>
 </head>
 <body>
@@ -516,7 +626,6 @@
         // =====================================================
         // KONFIGURATION
         // =====================================================
-        // Dateiname der JSON-Datei (muss im gleichen Ordner sein)
         const JSON_FILENAME = 'quiz_data.json';
         // =====================================================
 
@@ -553,11 +662,9 @@
 
         function QuizApp() {
             const [quizData, setQuizData] = React.useState(null);
-            const [loadedFrom, setLoadedFrom] = React.useState(null);
             const [currentQuestion, setCurrentQuestion] = React.useState(0);
             const [selectedAnswer, setSelectedAnswer] = React.useState(null);
-            const [showFeedback, setShowFeedback] = React.useState(false);
-            const [score, setScore] = React.useState(0);
+            const [answers, setAnswers] = React.useState([]);
             const [quizCompleted, setQuizCompleted] = React.useState(false);
             const [loading, setLoading] = React.useState(true);
             const [needsManualUpload, setNeedsManualUpload] = React.useState(false);
@@ -566,7 +673,6 @@
             
             const fileInputRef = React.useRef(null);
 
-            // Versuche automatisch die JSON zu laden
             React.useEffect(() => {
                 loadQuizFromFile();
             }, []);
@@ -575,29 +681,22 @@
                 setLoading(true);
                 setError(null);
                 
-                // URL-Parameter prüfen (optional: ?file=andere_datei.json)
                 const urlParams = new URLSearchParams(window.location.search);
                 const fileName = urlParams.get('file') || JSON_FILENAME;
                 
                 try {
                     const response = await fetch(fileName);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-                    
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     const data = await response.json();
-                    validateAndSetQuizData(data, fileName);
-                    
+                    validateAndSetQuizData(data);
                 } catch (err) {
-                    // Fetch fehlgeschlagen - wahrscheinlich lokales Öffnen ohne Server
                     console.log('Auto-load failed:', err.message);
                     setNeedsManualUpload(true);
                     setLoading(false);
                 }
             };
 
-            const validateAndSetQuizData = (data, source) => {
+            const validateAndSetQuizData = (data) => {
                 if (!data.questions || !Array.isArray(data.questions)) {
                     throw new Error('Ungültiges Format: "questions" Array fehlt');
                 }
@@ -606,7 +705,6 @@
                 }
                 
                 setQuizData(data);
-                setLoadedFrom(source);
                 setLoading(false);
                 setNeedsManualUpload(false);
                 setError(null);
@@ -614,7 +712,6 @@
 
             const handleFileSelect = (file) => {
                 if (!file) return;
-                
                 if (!file.name.endsWith('.json')) {
                     setError('Bitte wähle eine JSON-Datei aus.');
                     return;
@@ -624,7 +721,7 @@
                 reader.onload = (e) => {
                     try {
                         const data = JSON.parse(e.target.result);
-                        validateAndSetQuizData(data, file.name);
+                        validateAndSetQuizData(data);
                         resetQuizState();
                     } catch (err) {
                         setError(`JSON-Fehler: ${err.message}`);
@@ -642,32 +739,35 @@
             const resetQuizState = () => {
                 setCurrentQuestion(0);
                 setSelectedAnswer(null);
-                setShowFeedback(false);
-                setScore(0);
+                setAnswers([]);
                 setQuizCompleted(false);
             };
 
             const handleAnswerClick = (index) => {
-                if (showFeedback) return;
                 setSelectedAnswer(index);
             };
 
-            const handleSubmit = () => {
-                if (selectedAnswer === null) return;
-                setShowFeedback(true);
-                if (quizData.questions[currentQuestion].answers[selectedAnswer].correct) {
-                    setScore(score + 1);
-                }
-            };
-
             const handleNext = () => {
+                const newAnswers = [...answers, selectedAnswer];
+                setAnswers(newAnswers);
+                
                 if (currentQuestion < quizData.questions.length - 1) {
                     setCurrentQuestion(currentQuestion + 1);
                     setSelectedAnswer(null);
-                    setShowFeedback(false);
                 } else {
                     setQuizCompleted(true);
                 }
+            };
+
+            const calculateScore = () => {
+                if (!quizData) return 0;
+                return answers.reduce((score, answer, index) => {
+                    const question = quizData.questions[index];
+                    if (question.answers[answer]?.correct) {
+                        return score + 1;
+                    }
+                    return score;
+                }, 0);
             };
 
             // Loading
@@ -682,7 +782,7 @@
                 );
             }
 
-            // Manual Upload erforderlich (lokales Öffnen ohne Server)
+            // Manual Upload
             if (needsManualUpload && !quizData) {
                 return (
                     <div className="quiz-container">
@@ -724,15 +824,12 @@
                             )}
                             
                             <div className="info-box">
-                                <h4>💡 Tipp: Automatisches Laden aktivieren</h4>
+                                <h4>💡 Tipp: Automatisches Laden</h4>
                                 <p>
-                                    Um die JSON-Datei automatisch zu laden, starte einen lokalen Server:
+                                    Für automatisches Laden starte einen lokalen Server:
                                 </p>
                                 <p>
                                     <code>python -m http.server 8000</code>
-                                </p>
-                                <p>
-                                    Dann öffne: <code>http://localhost:8000/quiz_app.html</code>
                                 </p>
                             </div>
                         </div>
@@ -740,9 +837,11 @@
                 );
             }
 
-            // Results
+            // Results with Review
             if (quizCompleted) {
-                const percentage = Math.round((score / quizData.questions.length) * 100);
+                const score = calculateScore();
+                const totalQuestions = quizData.questions.length;
+                const percentage = Math.round((score / totalQuestions) * 100);
                 let message, emoji;
                 
                 if (percentage >= 90) { message = "Ausgezeichnet!"; emoji = "🏆"; }
@@ -757,14 +856,14 @@
                             <div className="results-score">{percentage}%</div>
                             <div className="results-message">{message}</div>
                             
-                            <div className="results-details">
+                            <div className="results-summary">
                                 <div className="results-stat">
                                     <span className="results-label">Richtige Antworten:</span>
-                                    <span className="results-value">{score} von {quizData.questions.length}</span>
+                                    <span className="results-value">{score} von {totalQuestions}</span>
                                 </div>
                                 <div className="results-stat">
                                     <span className="results-label">Falsche Antworten:</span>
-                                    <span className="results-value">{quizData.questions.length - score}</span>
+                                    <span className="results-value">{totalQuestions - score}</span>
                                 </div>
                             </div>
                             
@@ -787,13 +886,84 @@
                                 />
                             </div>
                         </div>
+                        
+                        {/* Auflösung aller Fragen */}
+                        <div className="review-section">
+                            <h2 className="review-title">📋 Auflösung</h2>
+                            
+                            {quizData.questions.map((question, qIndex) => {
+                                const userAnswer = answers[qIndex];
+                                const isCorrect = question.answers[userAnswer]?.correct;
+                                
+                                return (
+                                    <div key={qIndex} className={`review-question ${isCorrect ? 'correct' : 'incorrect'}`}>
+                                        <div className="review-question-header">
+                                            <span className="review-question-number">Frage {qIndex + 1}</span>
+                                            <span className={`review-status ${isCorrect ? 'correct' : 'incorrect'}`}>
+                                                {isCorrect ? '✓ Richtig' : '✗ Falsch'}
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="review-question-text">
+                                            {renderTextWithCode(question.question)}
+                                        </div>
+                                        
+                                        {question.code && (
+                                            <CodeBlock code={question.code} language={question.codeLanguage} />
+                                        )}
+                                        
+                                        <div className="review-answers">
+                                            {question.answers.map((answer, aIndex) => {
+                                                let className = "review-answer";
+                                                let marker = null;
+                                                
+                                                // Richtige Antwort immer grün markieren
+                                                if (answer.correct) {
+                                                    className += " correct-answer";
+                                                    marker = "✓ Richtig";
+                                                }
+                                                
+                                                // Falsche User-Antwort rot markieren
+                                                if (aIndex === userAnswer && !answer.correct) {
+                                                    className += " user-wrong";
+                                                    marker = "✗ Deine Antwort";
+                                                }
+                                                
+                                                // User hat richtig geantwortet
+                                                if (aIndex === userAnswer && answer.correct) {
+                                                    marker = "✓ Deine Antwort";
+                                                }
+                                                
+                                                return (
+                                                    <div key={aIndex} className={className}>
+                                                        <span className="review-answer-letter">
+                                                            {String.fromCharCode(65 + aIndex)}
+                                                        </span>
+                                                        <span>{renderTextWithCode(answer.text)}</span>
+                                                        {marker && <span className="review-answer-marker">{marker}</span>}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        
+                                        <div className="review-explanation">
+                                            <div className="review-explanation-title">💡 Erklärung</div>
+                                            <p>{renderTextWithCode(question.explanation)}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 );
             }
 
             // Quiz
             const question = quizData.questions[currentQuestion];
-            const progress = ((currentQuestion + 1) / quizData.questions.length) * 100;
+            const totalQuestions = quizData.questions.length;
+            const answeredCount = answers.length;
+            const remainingQuestions = totalQuestions - answeredCount - 1;
+            const progress = (answeredCount / totalQuestions) * 100;
 
             return (
                 <div className="quiz-container">
@@ -801,21 +971,30 @@
                         <h1 className="quiz-title">{quizData.title}</h1>
                         <p className="quiz-subtitle">{quizData.subtitle}</p>
                     </div>
-                    
-                    {loadedFrom && (
-                        <div className="loaded-info">
-                            <span className="icon">✓</span>
-                            <span>Geladen: {loadedFrom} ({quizData.questions.length} Fragen)</span>
-                        </div>
-                    )}
 
-                    <div className="progress-bar">
-                        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                    <div className="progress-section">
+                        <div className="progress-bar">
+                            <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                        </div>
+                        <div className="progress-stats">
+                            <div className="stat-item answered">
+                                <span className="stat-icon">✓</span>
+                                <span>Beantwortet: <span className="stat-value">{answeredCount}</span></span>
+                            </div>
+                            <div className="stat-item">
+                                <span className="stat-icon">📝</span>
+                                <span>Aktuelle Frage: <span className="stat-value">{currentQuestion + 1} / {totalQuestions}</span></span>
+                            </div>
+                            <div className="stat-item remaining">
+                                <span className="stat-icon">⏳</span>
+                                <span>Verbleibend: <span className="stat-value">{remainingQuestions}</span></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="question-card">
                         <div className="question-number">
-                            Frage {currentQuestion + 1} von {quizData.questions.length}
+                            Frage {currentQuestion + 1} von {totalQuestions}
                         </div>
                         <div className="question-text">
                             {renderTextWithCode(question.question)}
@@ -828,10 +1007,7 @@
                         <div className="answers-grid">
                             {question.answers.map((answer, index) => {
                                 let className = "answer-button";
-                                if (showFeedback) {
-                                    if (answer.correct) className += " correct";
-                                    else if (selectedAnswer === index) className += " incorrect";
-                                } else if (selectedAnswer === index) {
+                                if (selectedAnswer === index) {
                                     className += " selected";
                                 }
 
@@ -840,7 +1016,6 @@
                                         key={index}
                                         className={className}
                                         onClick={() => handleAnswerClick(index)}
-                                        disabled={showFeedback}
                                     >
                                         <span className="answer-letter">
                                             {String.fromCharCode(65 + index)}
@@ -850,32 +1025,16 @@
                                 );
                             })}
                         </div>
-
-                        {showFeedback && (
-                            <div className={`feedback ${question.answers[selectedAnswer].correct ? 'correct' : 'incorrect'}`}>
-                                <div className="feedback-title">
-                                    <span>{question.answers[selectedAnswer].correct ? '✅' : '❌'}</span>
-                                    {question.answers[selectedAnswer].correct ? 'Richtig!' : 'Leider falsch'}
-                                </div>
-                                <p>{renderTextWithCode(question.explanation)}</p>
-                            </div>
-                        )}
                     </div>
 
                     <div className="control-buttons">
-                        {!showFeedback ? (
-                            <button 
-                                className="btn btn-primary" 
-                                onClick={handleSubmit}
-                                disabled={selectedAnswer === null}
-                            >
-                                Antwort prüfen
-                            </button>
-                        ) : (
-                            <button className="btn btn-primary" onClick={handleNext}>
-                                {currentQuestion < quizData.questions.length - 1 ? 'Nächste Frage →' : 'Ergebnis anzeigen'}
-                            </button>
-                        )}
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={handleNext}
+                            disabled={selectedAnswer === null}
+                        >
+                            {currentQuestion < quizData.questions.length - 1 ? 'Nächste Frage →' : 'Quiz beenden'}
+                        </button>
                     </div>
                 </div>
             );
