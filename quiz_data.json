@@ -1,95 +1,266 @@
 {
   "title": "Python Grundlagen Quiz",
-  "subtitle": "Testen Sie Ihr Wissen über Python-Programmierung",
+  "subtitle": "Variablen, Schleifen, Bedingungen und mehr",
   "questions": [
     {
       "id": 1,
-      "question": "Was gibt der folgende Code aus?",
-      "code": "x = 5\ny = 3\nprint(x + y * 2)",
-      "codeLanguage": "python",
-      "answers": [
-        { "text": "16", "correct": false },
-        { "text": "11", "correct": true },
-        { "text": "13", "correct": false },
-        { "text": "Fehler", "correct": false }
-      ],
-      "explanation": "Die Multiplikation wird vor der Addition ausgeführt (Punkt vor Strich): `y * 2 = 6`, dann `x + 6 = 11`"
-    },
-    {
-      "id": 2,
-      "question": "Was ist die Ausgabe dieses Programms?",
-      "code": "fruits = ['Apfel', 'Birne', 'Kirsche']\nfor i, fruit in enumerate(fruits):\n    print(f'{i}: {fruit}')",
-      "codeLanguage": "python",
-      "answers": [
-        { "text": "`1: Apfel`, `2: Birne`, `3: Kirsche`", "correct": false },
-        { "text": "`0: Apfel`, `1: Birne`, `2: Kirsche`", "correct": true },
-        { "text": "`Apfel`, `Birne`, `Kirsche`", "correct": false },
-        { "text": "Ein Fehler tritt auf", "correct": false }
-      ],
-      "explanation": "`enumerate()` gibt Tupel von (Index, Wert) zurück, wobei der Index bei 0 beginnt."
-    },
-    {
-      "id": 3,
-      "question": "Welchen Wert hat `result` nach Ausführung des Codes?",
-      "code": "def calculate(a, b=10):\n    return a * b\n\nresult = calculate(5)",
+      "question": "Was ist der Wert von `x` nach diesem Code?",
+      "code": "x = 5\nx = x + 3",
       "codeLanguage": "python",
       "answers": [
         { "text": "5", "correct": false },
-        { "text": "10", "correct": false },
-        { "text": "50", "correct": true },
-        { "text": "Fehler - Parameter fehlt", "correct": false }
+        { "text": "3", "correct": false },
+        { "text": "8", "correct": true },
+        { "text": "Fehler", "correct": false }
       ],
-      "explanation": "Der Parameter `b` hat einen Standardwert von 10. Da nur `a=5` übergeben wird, ist das Ergebnis `5 * 10 = 50`."
+      "explanation": "Zuerst wird `x` auf 5 gesetzt. Dann wird `x + 3` berechnet (5 + 3 = 8) und das Ergebnis wieder in `x` gespeichert."
+    },
+    {
+      "id": 2,
+      "question": "Was gibt dieser Code aus?",
+      "code": "a = 10\nb = 3\nprint(a % b)",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "3", "correct": false },
+        { "text": "1", "correct": true },
+        { "text": "3.33", "correct": false },
+        { "text": "0", "correct": false }
+      ],
+      "explanation": "Der Modulo-Operator `%` gibt den Rest einer Division zurück. 10 geteilt durch 3 ergibt 3 Rest 1."
+    },
+    {
+      "id": 3,
+      "question": "Was wird ausgegeben?",
+      "code": "x = 7\nif x > 10:\n    print('gross')\nelif x > 5:\n    print('mittel')\nelse:\n    print('klein')",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "gross", "correct": false },
+        { "text": "mittel", "correct": true },
+        { "text": "klein", "correct": false },
+        { "text": "Nichts", "correct": false }
+      ],
+      "explanation": "x ist 7. Die erste Bedingung (x > 10) ist falsch. Die zweite Bedingung (x > 5) ist wahr, also wird 'mittel' ausgegeben."
     },
     {
       "id": 4,
-      "question": "Was ist das Ergebnis der folgenden List Comprehension?",
-      "code": "numbers = [1, 2, 3, 4, 5]\nresult = [x ** 2 for x in numbers if x % 2 == 0]",
+      "question": "Wie oft wird 'Hallo' ausgegeben?",
+      "code": "i = 0\nwhile i < 3:\n    print('Hallo')\n    i = i + 1",
       "codeLanguage": "python",
       "answers": [
-        { "text": "`[1, 4, 9, 16, 25]`", "correct": false },
-        { "text": "`[4, 16]`", "correct": true },
-        { "text": "`[2, 4]`", "correct": false },
-        { "text": "`[1, 9, 25]`", "correct": false }
+        { "text": "2 mal", "correct": false },
+        { "text": "3 mal", "correct": true },
+        { "text": "4 mal", "correct": false },
+        { "text": "Unendlich oft", "correct": false }
       ],
-      "explanation": "Die List Comprehension filtert zuerst gerade Zahlen (`x % 2 == 0` → 2 und 4) und quadriert sie dann: `2² = 4` und `4² = 16`."
+      "explanation": "Die Schleife läuft für i = 0, 1, 2 (solange i < 3). Das sind 3 Durchläufe."
     },
     {
       "id": 5,
       "question": "Was gibt dieser Code aus?",
-      "code": "class Dog:\n    def __init__(self, name):\n        self.name = name\n    \n    def speak(self):\n        return f'{self.name} sagt Wuff!'\n\nrex = Dog('Rex')\nprint(rex.speak())",
+      "code": "for i in range(3):\n    print(i)",
       "codeLanguage": "python",
       "answers": [
-        { "text": "`Dog sagt Wuff!`", "correct": false },
-        { "text": "`Rex sagt Wuff!`", "correct": true },
-        { "text": "`name sagt Wuff!`", "correct": false },
-        { "text": "Fehler", "correct": false }
+        { "text": "1, 2, 3", "correct": false },
+        { "text": "0, 1, 2", "correct": true },
+        { "text": "0, 1, 2, 3", "correct": false },
+        { "text": "3", "correct": false }
       ],
-      "explanation": "Der Konstruktor `__init__` speichert 'Rex' in `self.name`. Die `speak()`-Methode verwendet diesen Wert im f-String."
+      "explanation": "`range(3)` erzeugt die Zahlen 0, 1, 2. Die 3 selbst ist nicht dabei."
     },
     {
       "id": 6,
-      "question": "Welcher Datentyp ist das Ergebnis von `type('Hallo')`?",
+      "question": "Was ist der Wert von `y` am Ende?",
+      "code": "y = 1\nfor i in range(4):\n    y = y * 2",
+      "codeLanguage": "python",
       "answers": [
-        { "text": "`int`", "correct": false },
-        { "text": "`str`", "correct": true },
-        { "text": "`float`", "correct": false },
-        { "text": "`bool`", "correct": false }
+        { "text": "8", "correct": false },
+        { "text": "16", "correct": true },
+        { "text": "4", "correct": false },
+        { "text": "2", "correct": false }
       ],
-      "explanation": "Texte in Anführungszeichen sind vom Typ `str` (String)."
+      "explanation": "Die Schleife läuft 4 mal. y wird jedes Mal verdoppelt: 1 → 2 → 4 → 8 → 16."
     },
     {
       "id": 7,
-      "question": "Was passiert bei diesem Code?",
-      "code": "try:\n    x = 10 / 0\nexcept ZeroDivisionError:\n    print('Nicht durch Null teilen!')\nfinally:\n    print('Fertig')",
+      "question": "Was wird ausgegeben?",
+      "code": "x = 5\ny = 5\nif x == y:\n    print('gleich')\nelse:\n    print('ungleich')",
       "codeLanguage": "python",
       "answers": [
-        { "text": "Nur `Nicht durch Null teilen!` wird ausgegeben", "correct": false },
-        { "text": "Nur `Fertig` wird ausgegeben", "correct": false },
-        { "text": "Beide Nachrichten werden ausgegeben", "correct": true },
-        { "text": "Das Programm stürzt ab", "correct": false }
+        { "text": "gleich", "correct": true },
+        { "text": "ungleich", "correct": false },
+        { "text": "True", "correct": false },
+        { "text": "Fehler", "correct": false }
       ],
-      "explanation": "Der `except`-Block fängt die Division durch Null ab, und der `finally`-Block wird immer ausgeführt, egal ob ein Fehler auftrat oder nicht."
+      "explanation": "`==` vergleicht zwei Werte. Da x und y beide 5 sind, ist die Bedingung wahr."
+    },
+    {
+      "id": 8,
+      "question": "Was gibt dieser Code aus?",
+      "code": "a = 4\nb = 2\nprint(a ** b)",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "8", "correct": false },
+        { "text": "6", "correct": false },
+        { "text": "16", "correct": true },
+        { "text": "2", "correct": false }
+      ],
+      "explanation": "Der Operator `**` bedeutet 'hoch'. Also 4 hoch 2 = 4 * 4 = 16."
+    },
+    {
+      "id": 9,
+      "question": "Was wird ausgegeben?",
+      "code": "x = 10\nif x > 5 and x < 8:\n    print('A')\nelse:\n    print('B')",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "A", "correct": false },
+        { "text": "B", "correct": true },
+        { "text": "True", "correct": false },
+        { "text": "Fehler", "correct": false }
+      ],
+      "explanation": "x ist 10. Die Bedingung `x > 5` ist wahr, aber `x < 8` ist falsch. Bei `and` müssen beide wahr sein."
+    },
+    {
+      "id": 10,
+      "question": "Was ist der Wert von `summe`?",
+      "code": "summe = 0\nfor i in range(1, 4):\n    summe = summe + i",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "10", "correct": false },
+        { "text": "6", "correct": true },
+        { "text": "3", "correct": false },
+        { "text": "4", "correct": false }
+      ],
+      "explanation": "`range(1, 4)` erzeugt 1, 2, 3. Die Summe ist 1 + 2 + 3 = 6."
+    },
+    {
+      "id": 11,
+      "question": "Was gibt dieser Code aus?",
+      "code": "x = 3\nwhile x > 0:\n    print(x)\n    x = x - 1",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "3, 2, 1, 0", "correct": false },
+        { "text": "3, 2, 1", "correct": true },
+        { "text": "2, 1, 0", "correct": false },
+        { "text": "1, 2, 3", "correct": false }
+      ],
+      "explanation": "Die Schleife gibt x aus und verringert es dann. Bei x = 0 ist die Bedingung (x > 0) falsch, also stoppt die Schleife."
+    },
+    {
+      "id": 12,
+      "question": "Was wird ausgegeben?",
+      "code": "zahl = 15\nif zahl % 2 == 0:\n    print('gerade')\nelse:\n    print('ungerade')",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "gerade", "correct": false },
+        { "text": "ungerade", "correct": true },
+        { "text": "15", "correct": false },
+        { "text": "1", "correct": false }
+      ],
+      "explanation": "15 % 2 ergibt 1 (nicht 0), also ist 15 ungerade."
+    },
+    {
+      "id": 13,
+      "question": "Was ist der Wert von `x`?",
+      "code": "x = 10\nx = x - 3\nx = x * 2",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "4", "correct": false },
+        { "text": "14", "correct": true },
+        { "text": "17", "correct": false },
+        { "text": "20", "correct": false }
+      ],
+      "explanation": "Schritt für Schritt: x = 10, dann x = 10 - 3 = 7, dann x = 7 * 2 = 14."
+    },
+    {
+      "id": 14,
+      "question": "Was gibt dieser Code aus?",
+      "code": "for i in range(2, 6):\n    print(i)",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "2, 3, 4, 5, 6", "correct": false },
+        { "text": "2, 3, 4, 5", "correct": true },
+        { "text": "1, 2, 3, 4, 5", "correct": false },
+        { "text": "6", "correct": false }
+      ],
+      "explanation": "`range(2, 6)` startet bei 2 und endet vor 6. Also: 2, 3, 4, 5."
+    },
+    {
+      "id": 15,
+      "question": "Was wird ausgegeben?",
+      "code": "x = 5\nif x != 5:\n    print('A')\nelse:\n    print('B')",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "A", "correct": false },
+        { "text": "B", "correct": true },
+        { "text": "True", "correct": false },
+        { "text": "False", "correct": false }
+      ],
+      "explanation": "`!=` bedeutet 'ungleich'. Da x gleich 5 ist, ist `x != 5` falsch, also wird 'B' ausgegeben."
+    },
+    {
+      "id": 16,
+      "question": "Wie oft läuft diese Schleife?",
+      "code": "x = 5\nwhile x < 5:\n    print(x)\n    x = x + 1",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "1 mal", "correct": false },
+        { "text": "5 mal", "correct": false },
+        { "text": "0 mal", "correct": true },
+        { "text": "Unendlich oft", "correct": false }
+      ],
+      "explanation": "Die Bedingung `x < 5` ist schon am Anfang falsch (x ist ja 5). Die Schleife läuft nie."
+    },
+    {
+      "id": 17,
+      "question": "Was gibt dieser Code aus?",
+      "code": "a = True\nb = False\nprint(a or b)",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "True", "correct": true },
+        { "text": "False", "correct": false },
+        { "text": "a or b", "correct": false },
+        { "text": "Fehler", "correct": false }
+      ],
+      "explanation": "Bei `or` reicht es, wenn einer der Werte True ist. Da a True ist, ist das Ergebnis True."
+    },
+    {
+      "id": 18,
+      "question": "Was ist der Wert von `ergebnis`?",
+      "code": "ergebnis = 10 // 3",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "3.33", "correct": false },
+        { "text": "3", "correct": true },
+        { "text": "1", "correct": false },
+        { "text": "4", "correct": false }
+      ],
+      "explanation": "`//` ist die Ganzzahl-Division (ohne Rest). 10 geteilt durch 3 ergibt 3 (abgerundet)."
+    },
+    {
+      "id": 19,
+      "question": "Was wird ausgegeben?",
+      "code": "n = 1\nwhile n <= 4:\n    n = n + 1\nprint(n)",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "4", "correct": false },
+        { "text": "5", "correct": true },
+        { "text": "3", "correct": false },
+        { "text": "1", "correct": false }
+      ],
+      "explanation": "Die Schleife erhöht n solange n <= 4. Wenn n = 5 wird, stoppt die Schleife und 5 wird ausgegeben."
+    },
+    {
+      "id": 20,
+      "question": "Was gibt dieser Code aus?",
+      "code": "x = 8\nif x >= 10:\n    print('A')\nelif x >= 5:\n    print('B')\nelif x >= 0:\n    print('C')",
+      "codeLanguage": "python",
+      "answers": [
+        { "text": "A", "correct": false },
+        { "text": "B", "correct": true },
+        { "text": "C", "correct": false },
+        { "text": "B und C", "correct": false }
+      ],
+      "explanation": "x ist 8. Die erste Bedingung (>= 10) ist falsch. Die zweite (>= 5) ist wahr, also wird 'B' ausgegeben. Die weiteren elif werden nicht mehr geprüft."
     }
   ]
 }
