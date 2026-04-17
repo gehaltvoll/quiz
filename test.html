@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bildformate — JPG, PNG, SVG, TIFF/BMP</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+    background: #f3f1fa;
+    min-height: 100vh;
+    color: #1e1b2e;
+  }
+  .container { max-width: 800px; margin: 0 auto; padding: 24px 16px 60px; }
+
+h1 { font-size: 28px; font-weight: 800; color: #6d28d9; letter-spacing: -0.5px; margin-bottom: 2px; }
+.subtitle { color: #6b7280; margin-bottom: 20px; font-size: 14px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 2px solid #e0dced; padding-bottom: 10px; margin-bottom: 24px; }
+.tab-btn {
+padding: 8px 16px; border-radius: 8px; border: none;
+background: transparent; color: #6d28d9; font-weight: 700;
+cursor: pointer; font-size: 13px; font-family: inherit;
+transition: all 0.15s;
+}
+.tab-btn:hover { background: #ede9f8; }
+.tab-btn.active { background: #6d28d9; color: #fff; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Cards */
+.card {
+background: #fff; border-radius: 14px; padding: 20px;
+border: 1.5px solid #e9e5f5; margin-bottom: 16px;
+box-shadow: 0 1px 4px rgba(109,40,217,0.04);
+}
+.card-title { font-weight: 700; font-size: 17px; margin-bottom: 10px; color: #1e1b2e; }
+
+/* Buttons */
+.btn {
+padding: 8px 20px; border-radius: 8px; border: none;
+background: #6d28d9; color: #fff; font-weight: 700;
+cursor: pointer; font-size: 14px; font-family: inherit;
+transition: background 0.15s; white-space: nowrap;
+}
+.btn:hover { background: #5b21b6; }
+.btn-alt { background: #ede9f8; color: #6d28d9; }
+.btn-alt:hover { background: #ddd6f3; }
+
+/* Tables */
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th { padding: 7px 12px; text-align: left; border-bottom: 2px solid #d1d5db; font-weight: 700; font-size: 13px; color: #6d28d9; }
+td { padding: 6px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+.mono { font-family: ‘JetBrains Mono’, monospace; }
+.accent { font-weight: 700; color: #6d28d9; }
+.muted { color: #6b7280; font-size: 13px; }
+
+/* Feedback */
+.fb { margin-top: 12px; padding: 8px 14px; border-radius: 8px; font-weight: 700; }
+.fb-ok { background: #d1fae5; color: #065f46; }
+.fb-err { background: #fee2e2; color: #991b1b; }
+
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+/* Tags */
+.tag {
+display: inline-block; padding: 3px 10px; border-radius: 6px;
+font-size: 12px; font-weight: 700; margin-right: 4px; margin-bottom: 4px;
+}
+.tag-green { background: #d1fae5; color: #065f46; }
+.tag-red { background: #fee2e2; color: #991b1b; }
+.tag-blue { background: #dbeafe; color: #1e40af; }
+.tag-yellow { background: #fef9c3; color: #854d0e; }
+.tag-purple { background: #ede9f8; color: #6d28d9; }
+
+/* Format header */
+.format-header {
+display: flex; align-items: center; gap: 14px;
+margin-bottom: 16px; flex-wrap: wrap;
+}
+.format-icon {
+width: 56px; height: 56px; border-radius: 14px;
+display: flex; align-items: center; justify-content: center;
+font-weight: 800; font-size: 15px; color: #fff;
+font-family: ‘JetBrains Mono’, monospace;
+flex-shrink: 0;
+}
+.format-header h2 { font-size: 20px; font-weight: 800; color: #1e1b2e; }
+.format-header p { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+/* Pro/Con lists */
+.pro-con { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.pro-con > div { padding: 12px; border-radius: 10px; }
+.pro-box { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.con-box { background: #fef2f2; border: 1px solid #fecaca; }
+.pro-con h4 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.pro-con ul { margin-left: 18px; font-size: 13px; line-height: 1.7; }
+
+/* Visual demos */
+.demo-area {
+background: repeating-conic-gradient(#e5e7eb 0% 25%, #fff 0% 50%) 50% / 16px 16px;
+border-radius: 10px; padding: 20px; text-align: center;
+border: 1.5px solid #e5e7eb; margin-top: 12px;
+}
+
+/* Compression slider */
+.quality-slider { margin: 14px 0; }
+.quality-slider label { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 4px; font-size: 14px; }
+.quality-slider input[type=“range”] { width: 100%; accent-color: #6d28d9; }
+.size-bar-track { height: 24px; background: #f3f4f6; border-radius: 8px; overflow: hidden; margin-top: 6px; position: relative; }
+.size-bar-fill { height: 100%; border-radius: 8px; transition: width 0.3s, background 0.3s; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; font-size: 12px; font-weight: 700; color: #fff; min-width: 60px; }
+
+/* SVG code viewer */
+.code-block {
+background: #1e1b2e; color: #e2e0ea; border-radius: 10px;
+padding: 16px; font-family: ‘JetBrains Mono’, monospace;
+font-size: 13px; line-height: 1.6; overflow-x: auto;
+margin-top: 12px;
+}
+.code-block .tag-hl { color: #c084fc; }
+.code-block .attr-hl { color: #67e8f9; }
+.code-block .val-hl { color: #86efac; }
+
+/* Zoom demo */
+.zoom-compare {
+display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px;
+}
+.zoom-box {
+border-radius: 10px; overflow: hidden; border: 1.5px solid #e5e7eb;
+text-align: center; background: #fff;
+}
+.zoom-box canvas, .zoom-box svg { display: block; margin: 0 auto; }
+.zoom-box p { padding: 8px; font-size: 12px; font-weight: 700; color: #6b7280; background: #f9fafb; }
+
+/* Quiz */
+.quiz-option {
+display: block; width: 100%; text-align: left;
+padding: 10px 16px; border-radius: 8px;
+border: 1.5px solid #e5e7eb; background: #fff;
+font-family: inherit; font-size: 14px; font-weight: 600;
+cursor: pointer; margin-bottom: 8px; transition: all 0.15s;
+}
+.quiz-option:hover { border-color: #6d28d9; background: #f5f3ff; }
+.quiz-option.correct { border-color: #22c55e; background: #f0fdf4; color: #065f46; }
+.quiz-option.wrong { border-color: #ef4444; background: #fef2f2; color: #991b1b; }
+.quiz-option.disabled { pointer-events: none; opacity: 0.6; }
+.quiz-option.disabled.correct { opacity: 1; }
+
+ul { margin-left: 20px; line-height: 1.8; }
+
+@media (max-width: 550px) {
+h1 { font-size: 22px; }
+.tab-btn { padding: 6px 10px; font-size: 12px; }
+.pro-con { grid-template-columns: 1fr; }
+.zoom-compare { grid-template-columns: 1fr; }
+.format-icon { width: 44px; height: 44px; font-size: 13px; }
+}
+</style>
+
+</head>
+<body>
+<div class="container">
+  <h1>Bildformate</h1>
+  <p class="subtitle">JPG · PNG · SVG · TIFF/BMP — Interaktiv erklärt</p>
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="jpg">JPG</button>
+    <button class="tab-btn" data-tab="png">PNG</button>
+    <button class="tab-btn" data-tab="svg">SVG</button>
+    <button class="tab-btn" data-tab="tiffbmp">TIFF / BMP</button>
+    <button class="tab-btn" data-tab="vergleich">Vergleich</button>
+    <button class="tab-btn" data-tab="quiz">Quiz</button>
+  </div>
+
+  <!-- ═══════════ JPG ═══════════ -->
+
+  <div class="tab-content active" id="jpg">
+    <div class="card">
+      <div class="format-header">
+        <div class="format-icon" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">JPG</div>
+        <div>
+          <h2>JPEG / JPG</h2>
+          <p>Joint Photographic Experts Group · seit 1992</p>
+        </div>
+      </div>
+      <p style="line-height:1.7">
+        JPEG ist das meistverbreitete Format für <strong>Fotos und fotorealistische Bilder</strong>.
+        Es verwendet eine <strong>verlustbehaftete Kompression</strong> (lossy): Bilddaten werden beim Speichern dauerhaft reduziert,
+        um kleinere Dateigrössen zu erreichen. Die Qualität lässt sich steuern (1–100 %).
+      </p>
+      <div style="margin-top: 12px">
+        <span class="tag tag-yellow">Rasterformat</span>
+        <span class="tag tag-red">Verlustbehaftet</span>
+        <span class="tag tag-blue">16.7 Mio. Farben</span>
+        <span class="tag tag-red">Keine Transparenz</span>
+      </div>
+    </div>
+
+```
+<div class="card">
+  <p class="card-title">Wie funktioniert JPEG-Kompression?</p>
+  <ol style="margin-left: 20px; line-height: 1.9; font-size: 14px;">
+    <li><strong>Farbraum-Umwandlung:</strong> RGB → YCbCr (Helligkeit + Farbinformation)</li>
+    <li><strong>Chroma-Subsampling:</strong> Farbinformationen werden reduziert (Auge empfindlicher für Helligkeit)</li>
+    <li><strong>Diskrete Kosinustransformation (DCT):</strong> Bild in 8×8-Pixel-Blöcke aufgeteilt und in Frequenzen zerlegt</li>
+    <li><strong>Quantisierung:</strong> Hohe Frequenzen (feine Details) werden verworfen — hier entsteht der Verlust</li>
+    <li><strong>Entropiekodierung:</strong> Verbleibende Daten werden verlustfrei komprimiert (Huffman)</li>
+  </ol>
+</div>
+
+<div class="card">
+  <p class="card-title">Qualität vs. Dateigrösse</p>
+  <p class="muted" style="margin-bottom: 6px">Simuliert die Auswirkung der JPEG-Qualitätsstufe auf die Dateigrösse (Bild: 1920×1080, 24 Bit)</p>
+  <div class="quality-slider">
+    <label><span>Qualität: <strong id="jpg-q-val">80</strong> %</span><span class="mono muted" id="jpg-size-text"></span></label>
+    <input type="range" min="1" max="100" value="80" id="jpg-q-slider">
+  </div>
+  <div class="size-bar-track">
+    <div class="size-bar-fill" id="jpg-bar"></div>
+  </div>
+  <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+    <span class="muted">Unkomprimiert: 5.93 MB</span>
+    <span class="muted" id="jpg-ratio-text"></span>
+  </div>
+
+  <table style="margin-top: 16px">
+    <thead><tr><th>Qualität</th><th>Ca. Dateigrösse</th><th>Kompressionsrate</th><th>Verwendung</th></tr></thead>
+    <tbody>
+      <tr><td>100 %</td><td>~2.5 MB</td><td>~2:1</td><td>Archivierung</td></tr>
+      <tr><td>80 %</td><td>~0.7 MB</td><td>~8:1</td><td>Webseiten (empfohlen)</td></tr>
+      <tr><td>50 %</td><td>~0.35 MB</td><td>~17:1</td><td>Thumbnails, Vorschau</td></tr>
+      <tr><td>10 %</td><td>~0.1 MB</td><td>~60:1</td><td>Extrem klein, sichtbare Artefakte</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <p class="card-title">JPEG-Artefakte</p>
+  <p style="line-height: 1.7">Bei starker Kompression entstehen sichtbare <strong>Artefakte</strong>:</p>
+  <ul>
+    <li><strong>Blockbildung:</strong> Die 8×8-Pixel-Blöcke werden sichtbar</li>
+    <li><strong>Farbverfälschung:</strong> Farbverläufe zeigen Stufen (Banding)</li>
+    <li><strong>Unschärfe:</strong> Feine Details und Kanten verschwimmen</li>
+    <li><strong>Generationsverlust:</strong> Jedes erneute Speichern verschlechtert die Qualität weiter</li>
+  </ul>
+  <div class="pro-con">
+    <div class="pro-box">
+      <h4 style="color:#065f46">✓ Vorteile</h4>
+      <ul>
+        <li>Sehr kleine Dateigrössen</li>
+        <li>Überall unterstützt</li>
+        <li>Ideal für Fotos</li>
+        <li>Einstellbare Qualität</li>
+      </ul>
+    </div>
+    <div class="con-box">
+      <h4 style="color:#991b1b">✗ Nachteile</h4>
+      <ul>
+        <li>Verlustbehaftet</li>
+        <li>Keine Transparenz</li>
+        <li>Schlecht für Text/Grafiken</li>
+        <li>Generationsverlust</li>
+      </ul>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════ PNG ═══════════ -->
+
+  <div class="tab-content" id="png">
+    <div class="card">
+      <div class="format-header">
+        <div class="format-icon" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">PNG</div>
+        <div>
+          <h2>PNG</h2>
+          <p>Portable Network Graphics · seit 1996</p>
+        </div>
+      </div>
+      <p style="line-height:1.7">
+        PNG ist ein <strong>verlustfreies</strong> Rasterformat, das speziell für das Web entwickelt wurde.
+        Es unterstützt <strong>Transparenz (Alpha-Kanal)</strong> und eignet sich ideal für Grafiken,
+        Logos, Screenshots und Bilder mit scharfen Kanten.
+      </p>
+      <div style="margin-top: 12px">
+        <span class="tag tag-yellow">Rasterformat</span>
+        <span class="tag tag-green">Verlustfrei</span>
+        <span class="tag tag-blue">16.7 Mio. Farben</span>
+        <span class="tag tag-green">Transparenz (Alpha)</span>
+      </div>
+    </div>
+
+```
+<div class="card">
+  <p class="card-title">PNG-Varianten</p>
+  <table>
+    <thead><tr><th>Typ</th><th>Farbtiefe</th><th>Farben</th><th>Transparenz</th><th>Verwendung</th></tr></thead>
+    <tbody>
+      <tr><td class="accent">PNG-8</td><td>8 Bit</td><td>256</td><td>Ja (1 Bit)</td><td>Einfache Grafiken, Icons</td></tr>
+      <tr><td class="accent">PNG-24</td><td>24 Bit</td><td>16.7 Mio.</td><td>Nein</td><td>Fotos ohne Transparenz</td></tr>
+      <tr><td class="accent">PNG-32</td><td>32 Bit</td><td>16.7 Mio.</td><td>Ja (8 Bit Alpha)</td><td>Grafiken mit weichen Transparenzen</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <p class="card-title">Transparenz — Alpha-Kanal</p>
+  <p style="line-height: 1.7; margin-bottom: 8px">
+    PNG-32 speichert pro Pixel <strong>4 Bytes</strong>: R, G, B + <strong>Alpha</strong> (0 = durchsichtig, 255 = deckend).
+    Das Schachbrettmuster zeigt transparente Bereiche:
+  </p>
+  <div class="demo-area">
+    <svg width="240" height="100" viewBox="0 0 240 100" style="filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15))">
+      <defs>
+        <linearGradient id="alphaGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#6d28d9" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#6d28d9" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <rect x="10" y="10" width="220" height="80" rx="14" fill="url(#alphaGrad)"/>
+      <text x="40" y="58" font-family="Nunito, sans-serif" font-weight="800" font-size="18" fill="#fff">Alpha: 255 → 0</text>
+    </svg>
+  </div>
+  <table style="margin-top: 14px">
+    <thead><tr><th>Kanal</th><th>Bits</th><th>Wertebereich</th><th>Bedeutung</th></tr></thead>
+    <tbody>
+      <tr><td>R (Rot)</td><td>8</td><td>0–255</td><td>Rotanteil</td></tr>
+      <tr><td>G (Grün)</td><td>8</td><td>0–255</td><td>Grünanteil</td></tr>
+      <tr><td>B (Blau)</td><td>8</td><td>0–255</td><td>Blauanteil</td></tr>
+      <tr><td class="accent">A (Alpha)</td><td>8</td><td>0–255</td><td>Transparenz</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <p class="card-title">Verlustfreie Kompression</p>
+  <p style="line-height: 1.7">
+    PNG verwendet den <strong>DEFLATE-Algorithmus</strong> (Kombination aus LZ77 + Huffman-Kodierung).
+    Zusätzlich werden vor der Kompression <strong>Filter</strong> auf jede Pixelzeile angewendet,
+    um die Daten für die Kompression zu optimieren.
+  </p>
+  <p style="margin-top: 10px; line-height: 1.7">
+    <strong>Wichtig:</strong> Verlustfrei bedeutet, dass <em>kein einziger Pixel</em> verändert wird —
+    die Datei ist aber deutlich grösser als JPEG bei Fotos.
+  </p>
+  <div class="pro-con">
+    <div class="pro-box">
+      <h4 style="color:#065f46">✓ Vorteile</h4>
+      <ul>
+        <li>Verlustfrei — perfekte Qualität</li>
+        <li>Alpha-Transparenz</li>
+        <li>Ideal für Grafiken & Screenshots</li>
+        <li>Kein Generationsverlust</li>
+      </ul>
+    </div>
+    <div class="con-box">
+      <h4 style="color:#991b1b">✗ Nachteile</h4>
+      <ul>
+        <li>Grosse Dateien bei Fotos</li>
+        <li>Keine Animation (→ APNG)</li>
+        <li>Langsamer zu kodieren als JPEG</li>
+        <li>Nicht ideal für Druck</li>
+      </ul>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════ SVG ═══════════ -->
+
+  <div class="tab-content" id="svg">
+    <div class="card">
+      <div class="format-header">
+        <div class="format-icon" style="background: linear-gradient(135deg, #22c55e, #14b8a6);">SVG</div>
+        <div>
+          <h2>SVG</h2>
+          <p>Scalable Vector Graphics · W3C-Standard seit 2001</p>
+        </div>
+      </div>
+      <p style="line-height:1.7">
+        SVG ist ein <strong>Vektorformat</strong> basierend auf XML. Statt Pixel beschreibt es Formen
+        durch <strong>mathematische Anweisungen</strong> (Punkte, Linien, Kurven). Dadurch ist es
+        <strong>unendlich skalierbar</strong> ohne Qualitätsverlust.
+      </p>
+      <div style="margin-top: 12px">
+        <span class="tag tag-green">Vektorformat</span>
+        <span class="tag tag-green">Verlustfrei</span>
+        <span class="tag tag-green">Skalierbar</span>
+        <span class="tag tag-green">Transparenz</span>
+        <span class="tag tag-purple">XML / Text</span>
+      </div>
+    </div>
+
+```
+<div class="card">
+  <p class="card-title">Raster vs. Vektor — Zoom-Vergleich</p>
+  <p class="muted" style="margin-bottom: 8px">Beobachte den Unterschied beim Vergrössern:</p>
+  <div class="zoom-compare">
+    <div class="zoom-box">
+      <canvas id="raster-canvas" width="200" height="140"></canvas>
+      <p>Rasterbild (Pixel) — wird unscharf</p>
+    </div>
+    <div class="zoom-box">
+      <svg width="200" height="140" viewBox="0 0 200 140" id="vector-svg">
+        <circle cx="100" cy="70" r="50" fill="none" stroke="#6d28d9" stroke-width="4"/>
+        <circle cx="100" cy="70" r="25" fill="#6d28d9" opacity="0.3"/>
+        <line x1="60" y1="40" x2="140" y2="100" stroke="#6d28d9" stroke-width="3"/>
+      </svg>
+      <p>Vektorbild (SVG) — bleibt scharf</p>
+    </div>
+  </div>
+  <div class="quality-slider" style="margin-top: 14px">
+    <label><span>Zoom: <strong id="zoom-val">1</strong>×</span></label>
+    <input type="range" min="1" max="8" value="1" id="zoom-slider">
+  </div>
+</div>
+
+<div class="card">
+  <p class="card-title">SVG = lesbarer Code</p>
+  <p style="line-height: 1.7; margin-bottom: 6px">
+    Eine SVG-Datei ist reiner Text (XML) und kann direkt im HTML eingebettet, mit CSS gestylt
+    und mit JavaScript animiert werden:
+  </p>
+  <div class="code-block">
+    <span class="tag-hl">&lt;svg</span> <span class="attr-hl">width</span>=<span class="val-hl">"200"</span> <span class="attr-hl">height</span>=<span class="val-hl">"200"</span><span class="tag-hl">&gt;</span><br>
+    &nbsp;&nbsp;<span class="tag-hl">&lt;circle</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr-hl">cx</span>=<span class="val-hl">"100"</span> <span class="attr-hl">cy</span>=<span class="val-hl">"100"</span> <span class="attr-hl">r</span>=<span class="val-hl">"80"</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="attr-hl">fill</span>=<span class="val-hl">"#6d28d9"</span><br>
+    &nbsp;&nbsp;<span class="tag-hl">/&gt;</span><br>
+    <span class="tag-hl">&lt;/svg&gt;</span>
+  </div>
+  <div style="margin-top: 14px">
+    <p style="font-weight: 700; margin-bottom: 8px">Grundlegende SVG-Elemente:</p>
+    <table>
+      <thead><tr><th>Element</th><th>Beschreibung</th><th>Beispiel</th></tr></thead>
+      <tbody>
+        <tr><td class="mono accent">&lt;circle&gt;</td><td>Kreis</td><td class="mono muted">cx, cy, r</td></tr>
+        <tr><td class="mono accent">&lt;rect&gt;</td><td>Rechteck</td><td class="mono muted">x, y, width, height</td></tr>
+        <tr><td class="mono accent">&lt;line&gt;</td><td>Linie</td><td class="mono muted">x1, y1, x2, y2</td></tr>
+        <tr><td class="mono accent">&lt;path&gt;</td><td>Pfad (beliebige Form)</td><td class="mono muted">d="M 0 0 L 100 100"</td></tr>
+        <tr><td class="mono accent">&lt;text&gt;</td><td>Text</td><td class="mono muted">x, y, font-size</td></tr>
+        <tr><td class="mono accent">&lt;polygon&gt;</td><td>Vieleck</td><td class="mono muted">points="0,0 50,100 100,0"</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <div class="pro-con">
+    <div class="pro-box">
+      <h4 style="color:#065f46">✓ Vorteile</h4>
+      <ul>
+        <li>Unendlich skalierbar</li>
+        <li>Kleine Dateigrösse (einfache Grafiken)</li>
+        <li>Bearbeitbar mit Code</li>
+        <li>Animierbar (CSS/JS)</li>
+        <li>Perfekt für Logos & Icons</li>
+      </ul>
+    </div>
+    <div class="con-box">
+      <h4 style="color:#991b1b">✗ Nachteile</h4>
+      <ul>
+        <li>Nicht geeignet für Fotos</li>
+        <li>Komplexe Grafiken = grosse Dateien</li>
+        <li>Kann Sicherheitsrisiko sein (eingebettetes JS)</li>
+        <li>Rendering-Unterschiede in Browsern</li>
+      </ul>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════ TIFF / BMP ═══════════ -->
+
+  <div class="tab-content" id="tiffbmp">
+    <div class="card">
+      <div class="format-header">
+        <div class="format-icon" style="background: linear-gradient(135deg, #78716c, #57534e);">TIFF</div>
+        <div>
+          <h2>TIFF</h2>
+          <p>Tagged Image File Format · seit 1986</p>
+        </div>
+      </div>
+      <p style="line-height:1.7">
+        TIFF ist ein professionelles Format für <strong>Druck, Archivierung und Bildbearbeitung</strong>.
+        Es speichert Bilder in <strong>höchster Qualität</strong> (verlustfrei oder unkomprimiert) und unterstützt
+        verschiedene Farbtiefen, Ebenen und Metadaten.
+      </p>
+      <div style="margin-top: 12px">
+        <span class="tag tag-yellow">Rasterformat</span>
+        <span class="tag tag-green">Verlustfrei möglich</span>
+        <span class="tag tag-blue">Bis 48 Bit Farbe</span>
+        <span class="tag tag-purple">Mehrere Ebenen</span>
+      </div>
+    </div>
+
+```
+<div class="card">
+  <p class="card-title">TIFF im Detail</p>
+  <table>
+    <thead><tr><th>Eigenschaft</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td>Kompression</td><td>Keine, LZW (verlustfrei), ZIP, oder JPEG (verlustbehaftet)</td></tr>
+      <tr><td>Farbtiefe</td><td>1, 8, 16, 24, 32, 48 Bit</td></tr>
+      <tr><td>Farbräume</td><td>RGB, CMYK, Lab, Graustufen</td></tr>
+      <tr><td>Transparenz</td><td>Ja (Alpha-Kanal)</td></tr>
+      <tr><td>Ebenen</td><td>Ja — mehrere Seiten/Ebenen pro Datei</td></tr>
+      <tr><td>Metadaten</td><td>EXIF, IPTC, XMP</td></tr>
+      <tr><td>Typische Grösse</td><td>Sehr gross (unkomprimiert)</td></tr>
+    </tbody>
+  </table>
+  <div class="pro-con">
+    <div class="pro-box">
+      <h4 style="color:#065f46">✓ Vorteile</h4>
+      <ul>
+        <li>Höchste Qualität</li>
+        <li>CMYK für professionellen Druck</li>
+        <li>Mehrere Ebenen/Seiten</li>
+        <li>Industriestandard in Fotografie</li>
+      </ul>
+    </div>
+    <div class="con-box">
+      <h4 style="color:#991b1b">✗ Nachteile</h4>
+      <ul>
+        <li>Sehr grosse Dateien</li>
+        <li>Nicht für Web geeignet</li>
+        <li>Browser-Unterstützung fehlt</li>
+        <li>Komplexes Format</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr style="border: none; border-top: 2px solid #e5e7eb; margin: 24px 0;">
+
+<div class="card">
+  <div class="format-header">
+    <div class="format-icon" style="background: linear-gradient(135deg, #a3a3a3, #737373);">BMP</div>
+    <div>
+      <h2>BMP</h2>
+      <p>Bitmap · Microsoft/IBM · seit 1986</p>
+    </div>
+  </div>
+  <p style="line-height:1.7">
+    BMP ist ein einfaches, <strong>unkomprimiertes</strong> Rasterformat von Microsoft.
+    Es speichert jeden Pixel direkt — ohne jegliche Kompression. Dadurch sind BMP-Dateien
+    <strong>sehr gross</strong>, aber die Struktur ist extrem einfach.
+  </p>
+  <div style="margin-top: 12px">
+    <span class="tag tag-yellow">Rasterformat</span>
+    <span class="tag tag-blue">Unkomprimiert</span>
+    <span class="tag tag-red">Keine Kompression</span>
+    <span class="tag tag-red">Veraltet</span>
+  </div>
+</div>
+
+<div class="card">
+  <p class="card-title">BMP-Dateistruktur</p>
+  <p style="line-height: 1.7; margin-bottom: 10px">Eine BMP-Datei hat einen einfachen Aufbau:</p>
+  <table>
+    <thead><tr><th>Bereich</th><th>Grösse</th><th>Inhalt</th></tr></thead>
+    <tbody>
+      <tr><td class="accent">File Header</td><td>14 Bytes</td><td>Dateityp ("BM"), Dateigrösse, Offset zu Pixeldaten</td></tr>
+      <tr><td class="accent">Info Header</td><td>40 Bytes</td><td>Breite, Höhe, Farbtiefe, Kompression</td></tr>
+      <tr><td class="accent">Farbtabelle</td><td>Variabel</td><td>Optional (bei ≤ 8 Bit)</td></tr>
+      <tr><td class="accent">Pixeldaten</td><td>Breite × Höhe × Bytes pro Pixel</td><td>Die eigentlichen Farbwerte, zeilenweise</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top: 14px; font-weight: 700;">Dateigrösse berechnen (24-Bit BMP):</p>
+  <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; margin-bottom: 12px">
+    <label style="font-weight:600; font-size: 14px">Breite:
+      <input type="number" min="1" value="640" id="bmp-w" style="width:90px; margin-left:6px; padding:6px 10px; border-radius:8px; border:1.5px solid #d1d5db; font-family:'JetBrains Mono',monospace; font-size:14px">
+    </label>
+    <label style="font-weight:600; font-size: 14px">Höhe:
+      <input type="number" min="1" value="480" id="bmp-h" style="width:90px; margin-left:6px; padding:6px 10px; border-radius:8px; border:1.5px solid #d1d5db; font-family:'JetBrains Mono',monospace; font-size:14px">
+    </label>
+  </div>
+  <table>
+    <tbody>
+      <tr><td>Header</td><td class="mono" id="bmp-header">54 Bytes</td></tr>
+      <tr><td>Pixeldaten</td><td class="mono accent" id="bmp-pixels"></td></tr>
+      <tr><td><strong>Total</strong></td><td class="mono accent" id="bmp-total"></td></tr>
+    </tbody>
+  </table>
+
+  <div class="pro-con" style="margin-top: 14px">
+    <div class="pro-box">
+      <h4 style="color:#065f46">✓ Vorteile</h4>
+      <ul>
+        <li>Extrem einfache Struktur</li>
+        <li>Kein Qualitätsverlust</li>
+        <li>Schnell zu lesen/schreiben</li>
+      </ul>
+    </div>
+    <div class="con-box">
+      <h4 style="color:#991b1b">✗ Nachteile</h4>
+      <ul>
+        <li>Riesige Dateien</li>
+        <li>Keine Kompression</li>
+        <li>Keine Transparenz (meistens)</li>
+        <li>Veraltet — heute kaum noch verwendet</li>
+      </ul>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════ VERGLEICH ═══════════ -->
+
+  <div class="tab-content" id="vergleich">
+    <div class="card">
+      <p class="card-title">Formatvergleich auf einen Blick</p>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th style="color:#ef4444">JPG</th>
+              <th style="color:#3b82f6">PNG</th>
+              <th style="color:#22c55e">SVG</th>
+              <th style="color:#78716c">TIFF</th>
+              <th style="color:#a3a3a3">BMP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="font-weight:700">Typ</td><td>Raster</td><td>Raster</td><td>Vektor</td><td>Raster</td><td>Raster</td></tr>
+            <tr><td style="font-weight:700">Kompression</td><td>Verlustbehaftet</td><td>Verlustfrei</td><td>–</td><td>Beide möglich</td><td>Keine</td></tr>
+            <tr><td style="font-weight:700">Transparenz</td><td class="accent" style="color:#991b1b">Nein</td><td class="accent" style="color:#065f46">Ja (Alpha)</td><td class="accent" style="color:#065f46">Ja</td><td class="accent" style="color:#065f46">Ja</td><td class="accent" style="color:#991b1b">Nein</td></tr>
+            <tr><td style="font-weight:700">Skalierbar</td><td>Nein</td><td>Nein</td><td class="accent" style="color:#065f46">Ja (∞)</td><td>Nein</td><td>Nein</td></tr>
+            <tr><td style="font-weight:700">Dateigrösse</td><td>Klein</td><td>Mittel</td><td>Sehr klein*</td><td>Sehr gross</td><td>Sehr gross</td></tr>
+            <tr><td style="font-weight:700">Web</td><td class="accent" style="color:#065f46">Ja</td><td class="accent" style="color:#065f46">Ja</td><td class="accent" style="color:#065f46">Ja</td><td class="accent" style="color:#991b1b">Nein</td><td class="accent" style="color:#991b1b">Nein</td></tr>
+            <tr><td style="font-weight:700">Druck</td><td>Bedingt</td><td>Bedingt</td><td>Ja</td><td class="accent" style="color:#065f46">Ideal</td><td>Möglich</td></tr>
+            <tr><td style="font-weight:700">Ideal für</td><td>Fotos</td><td>Grafiken, Screenshots</td><td>Logos, Icons</td><td>Profidruck</td><td>–</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="margin-top: 8px">* SVG-Dateigrösse hängt von der Komplexität der Grafik ab</p>
+    </div>
+
+```
+<div class="card">
+  <p class="card-title">Dateigrössen-Vergleich (1920 × 1080 Foto)</p>
+  <div id="size-bars"></div>
+</div>
+
+<div class="card">
+  <p class="card-title">Welches Format wählen?</p>
+  <table>
+    <thead><tr><th>Anwendung</th><th>Empfehlung</th><th>Begründung</th></tr></thead>
+    <tbody>
+      <tr><td>Foto auf Webseite</td><td class="accent">JPG</td><td>Kleine Datei, gute Qualität</td></tr>
+      <tr><td>Logo auf Webseite</td><td class="accent" style="color:#22c55e">SVG</td><td>Scharf auf allen Bildschirmgrössen</td></tr>
+      <tr><td>Screenshot / Grafik</td><td class="accent" style="color:#3b82f6">PNG</td><td>Scharfe Kanten, verlustfrei</td></tr>
+      <tr><td>Bild mit Transparenz</td><td class="accent" style="color:#3b82f6">PNG</td><td>Alpha-Kanal</td></tr>
+      <tr><td>Icon / Illustration</td><td class="accent" style="color:#22c55e">SVG</td><td>Skalierbar, animierbar</td></tr>
+      <tr><td>Professioneller Druck</td><td class="accent" style="color:#78716c">TIFF</td><td>CMYK, höchste Qualität</td></tr>
+      <tr><td>Bildarchivierung</td><td class="accent" style="color:#78716c">TIFF</td><td>Verlustfrei, Metadaten</td></tr>
+    </tbody>
+  </table>
+</div>
+```
+
+  </div>
+
+  <!-- ═══════════ QUIZ ═══════════ -->
+
+  <div class="tab-content" id="quiz">
+    <div class="card">
+      <p class="card-title">Teste dein Wissen!</p>
+      <p class="muted" style="margin-bottom: 4px">Beantworte die Fragen — Klicke auf die richtige Antwort.</p>
+    </div>
+    <div id="quiz-container"></div>
+    <button class="btn" id="quiz-reset" style="margin-top: 12px; display:none;">Quiz zurücksetzen</button>
+    <div class="card" id="quiz-score" style="display:none; margin-top: 12px; text-align: center;">
+      <p style="font-size: 22px; font-weight: 800;" id="quiz-score-text"></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ─── Helpers ─── */
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const fmt = n => n.toLocaleString("de-CH");
+const fmtF = (n, d=2) => n.toLocaleString("de-CH", {maximumFractionDigits:d});
+
+/* ─── Tabs ─── */
+$$(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    $$(".tab-btn").forEach(b => b.classList.remove("active"));
+    $$(".tab-content").forEach(c => c.classList.remove("active"));
+    btn.classList.add("active");
+    $(`#${btn.dataset.tab}`).classList.add("active");
+  });
+});
+
+/* ═══════════ JPG Quality Slider ═══════════ */
+const rawMB = 5.93;
+function jpgUpdate() {
+  const q = +$("#jpg-q-slider").value;
+  $("#jpg-q-val").textContent = q;
+  // rough model: size = raw * (0.015 + 0.42 * (q/100)^1.5)
+  const factor = 0.015 + 0.42 * Math.pow(q / 100, 1.5);
+  const sizeMB = rawMB * factor;
+  const pct = Math.min(100, (sizeMB / rawMB) * 100);
+  const ratio = rawMB / sizeMB;
+  const bar = $("#jpg-bar");
+  bar.style.width = Math.max(8, pct) + "%";
+  bar.style.background = q > 70 ? "#6d28d9" : q > 30 ? "#f59e0b" : "#ef4444";
+  bar.textContent = fmtF(sizeMB) + " MB";
+  $("#jpg-size-text").textContent = fmtF(sizeMB) + " MB";
+  $("#jpg-ratio-text").textContent = "Kompression: ~" + Math.round(ratio) + ":1";
+}
+$("#jpg-q-slider").addEventListener("input", jpgUpdate);
+jpgUpdate();
+
+/* ═══════════ SVG Zoom Demo ═══════════ */
+function drawRasterCircle(zoom) {
+  const canvas = $("#raster-canvas");
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // draw at low res then scale up to simulate pixelation
+  const baseSize = 24;
+  const offscreen = document.createElement("canvas");
+  offscreen.width = baseSize;
+  offscreen.height = Math.round(baseSize * (h / w));
+  const octx = offscreen.getContext("2d");
+  const oh = offscreen.height;
+
+  octx.strokeStyle = "#6d28d9";
+  octx.lineWidth = 1;
+  octx.beginPath();
+  octx.arc(baseSize/2, oh/2, baseSize * 0.35, 0, Math.PI * 2);
+  octx.stroke();
+  octx.fillStyle = "rgba(109,40,217,0.3)";
+  octx.beginPath();
+  octx.arc(baseSize/2, oh/2, baseSize * 0.18, 0, Math.PI * 2);
+  octx.fill();
+  octx.strokeStyle = "#6d28d9";
+  octx.lineWidth = 0.8;
+  octx.beginPath();
+  octx.moveTo(baseSize*0.25, oh*0.28);
+  octx.lineTo(baseSize*0.75, oh*0.72);
+  octx.stroke();
+
+  ctx.imageSmoothingEnabled = false;
+  const drawW = w * zoom;
+  const drawH = h * zoom;
+  const offX = (w - drawW) / 2;
+  const offY = (h - drawH) / 2;
+  ctx.drawImage(offscreen, offX, offY, drawW, drawH);
+}
+
+function updateZoom() {
+  const zoom = +$("#zoom-slider").value;
+  $("#zoom-val").textContent = zoom;
+  drawRasterCircle(zoom);
+
+  const svg = $("#vector-svg");
+  const vb = 200 / zoom;
+  const vbH = 140 / zoom;
+  const ox = (200 - vb) / 2;
+  const oy = (140 - vbH) / 2;
+  svg.setAttribute("viewBox", `${ox} ${oy} ${vb} ${vbH}`);
+}
+$("#zoom-slider").addEventListener("input", updateZoom);
+updateZoom();
+
+/* ═══════════ BMP Calculator ═══════════ */
+function bmpUpdate() {
+  const w = Math.max(1, +$("#bmp-w").value || 1);
+  const h = Math.max(1, +$("#bmp-h").value || 1);
+  // BMP rows are padded to 4-byte boundaries
+  const rowBytes = Math.ceil((w * 3) / 4) * 4;
+  const pixelData = rowBytes * h;
+  const total = 54 + pixelData;
+  $("#bmp-pixels").textContent = fmt(pixelData) + " Bytes (" + fmtF(pixelData/1024/1024) + " MB)";
+  $("#bmp-total").textContent = fmt(total) + " Bytes (" + fmtF(total/1024/1024) + " MB)";
+}
+$("#bmp-w").addEventListener("input", bmpUpdate);
+$("#bmp-h").addEventListener("input", bmpUpdate);
+bmpUpdate();
+
+/* ═══════════ Size Comparison Bars ═══════════ */
+(function renderSizeBars() {
+  const data = [
+    { name: "BMP (unkomprimiert)", size: 5.93, color: "#a3a3a3" },
+    { name: "TIFF (unkomprimiert)", size: 5.93, color: "#78716c" },
+    { name: "TIFF (LZW)", size: 3.2, color: "#a8a29e" },
+    { name: "PNG-24", size: 2.8, color: "#3b82f6" },
+    { name: "JPG 100%", size: 2.5, color: "#f59e0b" },
+    { name: "JPG 80%", size: 0.7, color: "#ef4444" },
+    { name: "JPG 50%", size: 0.35, color: "#dc2626" },
+  ];
+  const max = Math.max(...data.map(d => d.size));
+  let html = "";
+  data.forEach(d => {
+    const pct = (d.size / max) * 100;
+    html += `<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:2px">
+        <span>${d.name}</span><span class="mono">${fmtF(d.size)} MB</span>
+      </div>
+      <div style="height:20px;background:#f3f4f6;border-radius:6px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${d.color};border-radius:6px;transition:width 0.5s"></div>
+      </div>
+    </div>`;
+  });
+  $("#size-bars").innerHTML = html;
+})();
+
+/* ═══════════ Quiz ═══════════ */
+const quizData = [
+  {
+    q: "Welches Format eignet sich am besten für ein Foto auf einer Webseite?",
+    opts: ["PNG", "JPG", "BMP", "TIFF"],
+    correct: 1
+  },
+  {
+    q: "Welches Format unterstützt Transparenz (Alpha-Kanal)?",
+    opts: ["JPG", "BMP", "PNG", "Alle Formate"],
+    correct: 2
+  },
+  {
+    q: "Was ist SVG?",
+    opts: ["Ein Rasterformat mit Kompression", "Ein Vektorformat basierend auf XML", "Ein unkomprimiertes Bitmap-Format", "Ein Animationsformat"],
+    correct: 1
+  },
+  {
+    q: "Was passiert bei mehrfachem Speichern einer JPEG-Datei?",
+    opts: ["Nichts — die Qualität bleibt gleich", "Die Datei wird grösser", "Die Qualität verschlechtert sich (Generationsverlust)", "Die Datei wird in PNG umgewandelt"],
+    correct: 2
+  },
+  {
+    q: "Welches Format ist ideal für den professionellen Druck mit CMYK-Farbraum?",
+    opts: ["JPG", "SVG", "PNG", "TIFF"],
+    correct: 3
+  },
+  {
+    q: "Warum ist SVG unendlich skalierbar?",
+    opts: ["Weil es sehr viele Pixel hat", "Weil es mathematische Formen statt Pixel beschreibt", "Weil es verlustbehaftet komprimiert", "Weil es 48 Bit Farbtiefe hat"],
+    correct: 1
+  },
+  {
+    q: "Welches Format hat die grösste Datei bei einem unkomprimierten 1920×1080-Bild?",
+    opts: ["JPG", "PNG", "SVG", "BMP"],
+    correct: 3
+  },
+  {
+    q: "Welche Kompression verwendet PNG?",
+    opts: ["Verlustbehaftet (JPEG-Algorithmus)", "Gar keine Kompression", "Verlustfrei (DEFLATE)", "Chroma-Subsampling"],
+    correct: 2
+  },
+  {
+    q: "Welches Format kann direkt im HTML-Code eingebettet werden?",
+    opts: ["TIFF", "BMP", "SVG", "JPG"],
+    correct: 2
+  },
+  {
+    q: "Wie viele Farben kann ein PNG-8 darstellen?",
+    opts: ["8", "256", "16.7 Millionen", "Unbegrenzt"],
+    correct: 1
+  }
+];
+
+let quizAnswered = 0;
+let quizCorrect = 0;
+
+function renderQuiz() {
+  quizAnswered = 0;
+  quizCorrect = 0;
+  $("#quiz-score").style.display = "none";
+  $("#quiz-reset").style.display = "none";
+
+  let html = "";
+  quizData.forEach((item, qi) => {
+    html += `<div class="card" id="quiz-q-${qi}">
+      <p style="font-weight:700; margin-bottom:10px">${qi + 1}. ${item.q}</p>`;
+    item.opts.forEach((opt, oi) => {
+      html += `<button class="quiz-option" data-q="${qi}" data-o="${oi}">${opt}</button>`;
+    });
+    html += `<div id="quiz-fb-${qi}"></div></div>`;
+  });
+  $("#quiz-container").innerHTML = html;
+
+  $$(".quiz-option").forEach(btn => {
+    btn.addEventListener("click", function() {
+      const qi = +this.dataset.q;
+      const oi = +this.dataset.o;
+      const correct = quizData[qi].correct;
+      const siblings = $$(`[data-q="${qi}"]`);
+
+      if (this.classList.contains("disabled")) return;
+
+      siblings.forEach(s => s.classList.add("disabled"));
+      if (oi === correct) {
+        this.classList.add("correct");
+        $(`#quiz-fb-${qi}`).innerHTML = `<div class="fb fb-ok">✓ Richtig!</div>`;
+        quizCorrect++;
+      } else {
+        this.classList.add("wrong");
+        siblings[correct].classList.add("correct");
+        $(`#quiz-fb-${qi}`).innerHTML = `<div class="fb fb-err">✗ Falsch — Richtige Antwort: ${quizData[qi].opts[correct]}</div>`;
+      }
+
+      quizAnswered++;
+      if (quizAnswered === quizData.length) {
+        $("#quiz-score").style.display = "block";
+        $("#quiz-reset").style.display = "inline-block";
+        const pct = Math.round((quizCorrect / quizData.length) * 100);
+        const emoji = pct === 100 ? "🏆" : pct >= 70 ? "👍" : "📚";
+        $("#quiz-score-text").textContent = `${emoji} ${quizCorrect} von ${quizData.length} richtig (${pct} %)`;
+      }
+    });
+  });
+}
+
+$("#quiz-reset").addEventListener("click", renderQuiz);
+renderQuiz();
+</script>
+
+</body>
+</html>
