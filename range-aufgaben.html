@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>40 Aufgaben zur range()-Funktion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel-2:#1d212a; --line:#2a2f3a;
+    --text:#e6e9ef; --muted:#8b93a3;
+    --accent:#4ec9b0; --accent-2:#dcb67a; --accent-3:#569cd6;
+    --ok:#73c990; --danger:#e06c75; --code:#c8ccd4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;line-height:1.55;
+    padding:32px 20px 100px;min-height:100vh;
+    background-image:radial-gradient(circle at 12% -8%,rgba(78,201,176,.07),transparent 42%),
+                     radial-gradient(circle at 92% 0%,rgba(86,156,214,.06),transparent 42%);
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  header{margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:18px}
+  h1{font-size:1.6rem;font-weight:700;letter-spacing:-.02em}
+  h1 code{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:1.4rem}
+  .sub{color:var(--muted);margin-top:6px;font-size:.92rem}
+
+  /* Fortschrittsleiste */
+  .progress{position:sticky;top:0;z-index:10;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);
+    padding:14px 0;margin:0 0 8px;border-bottom:1px solid var(--line)}
+  .pbar-row{display:flex;align-items:center;gap:14px}
+  .pbar{flex:1;height:8px;background:var(--panel-2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+  .pfill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-3));transition:width .4s ease;border-radius:99px}
+  .pcount{font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--muted);white-space:nowrap}
+  .pcount b{color:var(--accent)}
+
+  h2.block{font-size:1.1rem;font-weight:700;margin:38px 0 14px;display:flex;align-items:center;gap:10px}
+  h2.block .tag{font-family:'JetBrains Mono',monospace;font-size:.8rem;background:var(--panel-2);color:var(--accent-2);
+    border:1px solid var(--line);padding:3px 9px;border-radius:7px}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px 20px;margin-bottom:14px;
+    transition:border-color .2s}
+  .card.done{border-color:rgba(115,201,144,.45)}
+  .card-head{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+  .cnum{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:var(--accent-3);
+    background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:3px 9px;flex-shrink:0}
+  .q{font-size:.97rem}
+  .q code{font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--panel-2);padding:1px 5px;border-radius:4px;font-size:.9em}
+
+  pre.code{font-family:'JetBrains Mono',monospace;font-size:.92rem;line-height:1.65;background:var(--bg);
+    border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:9px;
+    padding:13px 15px;margin:12px 0;color:var(--code);overflow-x:auto;white-space:pre}
+  .kw{color:#c586c0}.fn{color:#dcdcaa}.num{color:#b5cea8}.str{color:var(--accent)}
+
+  .answer-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  .answer-row input{font-family:'JetBrains Mono',monospace;font-size:.95rem;background:var(--bg);color:var(--text);
+    border:1px solid var(--line);border-radius:8px;padding:9px 12px;width:160px;transition:border-color .15s}
+  .answer-row input:focus{outline:none;border-color:var(--accent-3)}
+  button{font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;cursor:pointer;border-radius:8px;
+    padding:9px 16px;transition:all .15s;border:1px solid var(--line)}
+  .btn-check{background:var(--accent-3);color:#0b1018;border-color:var(--accent-3)}
+  .btn-check:hover{filter:brightness(1.1)}
+  .btn-reveal{background:transparent;color:var(--muted)}
+  .btn-reveal:hover{color:var(--text);border-color:#3a4150}
+  .feedback{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:500}
+  .feedback.ok{color:var(--ok)} .feedback.no{color:var(--danger)}
+
+  .sol{margin-top:12px;background:var(--panel-2);border:1px solid var(--line);border-left:3px solid var(--accent-2);
+    border-radius:9px;padding:13px 15px;font-size:.92rem}
+  .sol .out{font-family:'JetBrains Mono',monospace;color:var(--accent);margin-bottom:6px;display:block;white-space:pre-wrap}
+  .sol .exp{color:var(--muted)}
+  .hidden{display:none}
+  footer{margin-top:50px;color:var(--muted);font-size:.82rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>40 Aufgaben zur Funktion <code>range()</code></h1>
+    <p class="sub">Sagen Sie das Ergebnis voraus, bevor Sie die Lösung anzeigen. Tippen Sie Zahlen ins Eingabefeld und prüfen Sie sich selbst.</p>
+  </header>
+
+  <div class="progress">
+    <div class="pbar-row">
+      <div class="pbar"><div class="pfill" id="pfill"></div></div>
+      <div class="pcount"><b id="pdone">0</b> / 40 bearbeitet</div>
+    </div>
+  </div>
+
+  <div id="exercises"></div>
+
+  <footer>Tipp: <code style="font-family:'JetBrains Mono',monospace">stop</code> ist nie Teil der Folge · <code style="font-family:'JetBrains Mono',monospace">step</code> darf nicht 0 sein · <code style="font-family:'JetBrains Mono',monospace">range(len(liste))</code> erzeugt die Indizes.</footer>
+</div>
+
+<script>
+/* ---------- Aufgaben-Daten ---------- */
+const liste = "liste = [3, 5, 6, 7, 3, 4, 5, 7]";
+const EX = [
+ {block:"A · Zahlenfolge vorhersagen", tag:"Ausgabe"},
+ {q:"Welche Zahlen gibt die Schleife aus?", code:"for i in range(5):\n    print(i)", type:"reveal", sol:"0 1 2 3 4", exp:"range(5) startet bei 0 und hört vor 5 auf."},
+ {q:"Welche Zahlen gibt die Schleife aus?", code:"for i in range(2, 8):\n    print(i)", type:"reveal", sol:"2 3 4 5 6 7", exp:"Von start=2 bis stop=8 (exklusiv)."},
+ {q:"Welche Zahlen gibt die Schleife aus?", code:"for i in range(1, 10, 2):\n    print(i)", type:"reveal", sol:"1 3 5 7 9", exp:"In Zweierschritten von 1 aus – also die ungeraden Zahlen."},
+ {q:"Welche Zahlen gibt die Schleife aus?", code:"for i in range(10, 0, -1):\n    print(i)", type:"reveal", sol:"10 9 8 7 6 5 4 3 2 1", exp:"Negativer step zählt rückwärts. stop=0 ist nicht dabei."},
+ {q:"Welche Zahlen gibt die Schleife aus?", code:"for i in range(0, 20, 5):\n    print(i)", type:"reveal", sol:"0 5 10 15", exp:"In Fünferschritten; 20 wird nicht mehr erreicht."},
+ {q:"Welche Zahlen gibt die Schleife aus?", code:"for i in range(-3, 4):\n    print(i)", type:"reveal", sol:"-3 -2 -1 0 1 2 3", exp:"start darf auch negativ sein."},
+
+ {block:"B · Anzahl der Durchläufe", tag:"Wie oft?"},
+ {q:"Wie oft läuft die Schleife durch?", code:"for i in range(7):\n    print(i)", type:"value", ans:"7", exp:"range(7) → 0…6, das sind 7 Werte."},
+ {q:"Wie oft läuft die Schleife durch?", code:"for i in range(3, 9):\n    print(i)", type:"value", ans:"6", exp:"9 − 3 = 6 Durchläufe."},
+ {q:"Wie oft läuft die Schleife durch?", code:"for i in range(0, 10, 2):\n    print(i)", type:"value", ans:"5", exp:"0, 2, 4, 6, 8 → 5 Werte."},
+ {q:"Wie oft läuft die Schleife durch?", code:"for i in range(10, 0, -2):\n    print(i)", type:"value", ans:"5", exp:"10, 8, 6, 4, 2 → 5 Werte."},
+ {q:"Wie oft läuft die Schleife durch?", code:"for i in range(5, 5):\n    print(i)", type:"value", ans:"0", exp:"start und stop sind gleich → leere Folge, 0 Durchläufe."},
+ {q:"Wie oft läuft die Schleife durch?", code:"for i in range(5, 2):\n    print(i)", type:"value", ans:"0", exp:"step ist standardmässig +1, aber start>stop → leere Folge."},
+ {q:"Wie oft läuft die Schleife durch?", code:"for i in range(2, 30, 3):\n    print(i)", type:"value", ans:"10", exp:"2, 5, 8, … , 29 → 10 Werte."},
+ {q:"Wie oft läuft die Schleife durch?", code:liste+"\nfor i in range(len(liste)):\n    print(liste[i])", type:"value", ans:"8", exp:"Die Liste hat 8 Elemente, also len(liste)=8 → range(8)."},
+
+ {block:"C · Erste & letzte Zahl", tag:"Randwerte"},
+ {q:"Welche Zahl wird zuletzt ausgegeben?", code:"for i in range(5):\n    print(i)", type:"value", ans:"4", exp:"Letzter Wert ist stop − 1 = 4."},
+ {q:"Welche Zahl wird zuletzt ausgegeben?", code:"for i in range(2, 11, 3):\n    print(i)", type:"value", ans:"8", exp:"2, 5, 8 – danach wäre 11, das ist aber stop (exklusiv)."},
+ {q:"Welche Zahl wird zuerst ausgegeben?", code:"for i in range(10, 0, -1):\n    print(i)", type:"value", ans:"10", exp:"Die Folge beginnt immer bei start."},
+ {q:"Welche Zahl wird zuletzt ausgegeben?", code:"for i in range(10, 0, -1):\n    print(i)", type:"value", ans:"1", exp:"Rückwärts bis kurz vor stop=0, also 1."},
+ {q:"Welche Zahl wird zuletzt ausgegeben?", code:"for i in range(0, 100, 10):\n    print(i)", type:"value", ans:"90", exp:"0, 10, …, 90 – 100 wäre stop und ist nicht dabei."},
+
+ {block:"D · Listen über den Index", tag:"liste[i]"},
+ {q:"Was gibt die Schleife aus? (Liste: 3, 5, 6, 7, 3, 4, 5, 7)", code:liste+"\nfor i in range(len(liste)):\n    print(liste[i])", type:"reveal", sol:"3 5 6 7 3 4 5 7", exp:"i läuft von 0 bis 7, liste[i] holt der Reihe nach jedes Element."},
+ {q:"Welchen Wert hat <code>liste[0]</code>?", code:liste, type:"value", ans:"3", exp:"Index 0 ist das erste Element."},
+ {q:"Welchen Wert hat <code>liste[3]</code>?", code:liste, type:"value", ans:"7", exp:"Position 3 (das vierte Element)."},
+ {q:"Was gibt <code>print(liste[len(liste)-1])</code> aus?", code:liste, type:"value", ans:"7", exp:"len(liste)−1 = 7 → letztes Element."},
+ {q:"Was gibt die Schleife aus?", code:liste+"\nfor i in range(0, len(liste), 2):\n    print(liste[i])", type:"reveal", sol:"3 6 3 5", exp:"Indizes 0, 2, 4, 6 → jedes zweite Element."},
+ {q:"Was gibt die Schleife aus? (rückwärts)", code:liste+"\nfor i in range(len(liste)-1, -1, -1):\n    print(liste[i])", type:"reveal", sol:"7 5 4 3 7 6 5 3", exp:"i läuft von 7 bis 0 → die Liste wird rückwärts durchlaufen."},
+ {q:"Bei welchem Index steht der Wert 6?", code:liste, type:"value", ans:"2", exp:"liste[2] = 6."},
+ {q:"Was gibt <code>print(liste[2] + liste[4])</code> aus?", code:liste, type:"value", ans:"9", exp:"6 + 3 = 9."},
+
+ {block:"E · Summieren & Zählen", tag:"Akkumulator"},
+ {q:"Was gibt der Code aus?", code:"s = 0\nfor i in range(5):\n    s = s + i\nprint(s)", type:"value", ans:"10", exp:"0+1+2+3+4 = 10."},
+ {q:"Was gibt der Code aus?", code:"s = 0\nfor i in range(1, 6):\n    s = s + i\nprint(s)", type:"value", ans:"15", exp:"1+2+3+4+5 = 15."},
+ {q:"Was gibt der Code aus?", code:"p = 1\nfor i in range(1, 5):\n    p = p * i\nprint(p)", type:"value", ans:"24", exp:"1·2·3·4 = 24 (das ist 4 Fakultät)."},
+ {q:"Was gibt der Code aus?", code:"s = 0\nfor i in range(2, 11, 2):\n    s = s + i\nprint(s)", type:"value", ans:"30", exp:"2+4+6+8+10 = 30."},
+ {q:"Was gibt der Code aus?", code:liste+"\ns = 0\nfor i in range(len(liste)):\n    s = s + liste[i]\nprint(s)", type:"value", ans:"40", exp:"3+5+6+7+3+4+5+7 = 40 – die Summe aller Listenelemente."},
+ {q:"Was gibt der Code aus?", code:"s = 0\nfor i in range(10):\n    s = s + 1\nprint(s)", type:"value", ans:"10", exp:"Es wird 10-mal +1 gezählt → die Anzahl der Durchläufe."},
+ {q:"Was gibt der Code aus?", code:"s = 0\nfor i in range(1, 101):\n    s = s + i\nprint(s)", type:"value", ans:"5050", exp:"Summe von 1 bis 100 = 5050 (Gauss)."},
+
+ {block:"F · Knifflig & Fehler", tag:"Achtung"},
+ {q:"Was passiert hier?", code:"for i in range(5, 1):\n    print(i)", type:"reveal", sol:"(keine Ausgabe)", exp:"start=5 > stop=1 bei step +1 → leere Folge, die Schleife läuft 0-mal. Es wird nichts ausgegeben."},
+ {q:"Was passiert hier?", code:"for i in range(1, 5, 0):\n    print(i)", type:"reveal", sol:"ValueError: range() arg 3 must not be zero", exp:"step=0 ist nicht erlaubt – Python wirft einen ValueError."},
+ {q:"Wie viele Zeilen werden ausgegeben?", code:"for i in range(3):\n    for j in range(2):\n        print(i, j)", type:"value", ans:"6", exp:"3 × 2 = 6 Zeilen (verschachtelte Schleifen)."},
+ {q:"Was gibt <code>print(len(range(0, 100, 7)))</code> aus?", code:"print(len(range(0, 100, 7)))", type:"value", ans:"15", exp:"0, 7, 14, …, 98 → 15 Werte."},
+ {q:"Welche Zahl wird zuletzt ausgegeben?", code:"for i in range(20, 5, -3):\n    print(i)", type:"value", ans:"8", exp:"20, 17, 14, 11, 8 – danach wäre 5, das ist aber stop."},
+ {q:"Worin unterscheiden sich diese beiden Schleifen?", code:liste+"\n# Variante 1\nfor i in range(len(liste)):\n    print(liste[i])\n\n# Variante 2\nfor x in liste:\n    print(x)", type:"reveal", sol:"Beide geben dasselbe aus: 3 5 6 7 3 4 5 7", exp:"Variante 1 läuft über die Indizes (0,1,2,…) und greift mit liste[i] auf die Werte zu. Variante 2 läuft direkt über die Werte. Variante 2 ist eleganter; Variante 1 braucht man, wenn man zusätzlich den Index i benötigt (z.B. zum Vergleich mit dem Nachbarelement)."},
+];
+
+/* ---------- Syntax-Highlighting ---------- */
+function hl(code){
+  let s = code.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  s = s.replace(/(#[^\n]*)/g,'<span style="color:#6a7383">$1</span>');
+  s = s.replace(/\b(for|in|while|if|else|return)\b/g,'<span class="kw">$1</span>');
+  s = s.replace(/\b(range|print|len|str|int|sum)\b/g,'<span class="fn">$1</span>');
+  s = s.replace(/(-?\d+)/g,'<span class="num">$1</span>');
+  return s;
+}
+
+/* ---------- Rendern ---------- */
+const container = document.getElementById("exercises");
+let total = 0;
+const doneSet = new Set();
+let counter = 0;
+
+EX.forEach(item=>{
+  if(item.block){
+    const h = document.createElement("h2");
+    h.className = "block";
+    h.innerHTML = `${item.block} <span class="tag">${item.tag}</span>`;
+    container.appendChild(h);
+    return;
+  }
+  counter++; total++;
+  const id = counter;
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.id = id;
+
+  let html = `<div class="card-head"><span class="cnum">${id}</span><div class="q">${item.q}</div></div>`;
+  html += `<pre class="code">${hl(item.code)}</pre>`;
+
+  if(item.type === "value"){
+    html += `<div class="answer-row">
+        <input type="text" placeholder="Antwort…" data-input>
+        <button class="btn-check" data-check>Prüfen</button>
+        <button class="btn-reveal" data-reveal>Lösung zeigen</button>
+        <span class="feedback" data-fb></span>
+      </div>`;
+    html += `<div class="sol hidden" data-sol><span class="out">Antwort: ${item.ans}</span><span class="exp">${item.exp}</span></div>`;
+  } else {
+    html += `<button class="btn-reveal" data-reveal>Lösung zeigen</button>`;
+    html += `<div class="sol hidden" data-sol><span class="out">${item.sol}</span><span class="exp">${item.exp}</span></div>`;
+  }
+  card.innerHTML = html;
+  container.appendChild(card);
+
+  const reveal = card.querySelector("[data-reveal]");
+  const sol = card.querySelector("[data-sol]");
+  reveal.addEventListener("click", ()=>{
+    sol.classList.toggle("hidden");
+    reveal.textContent = sol.classList.contains("hidden") ? "Lösung zeigen" : "Lösung verbergen";
+    markDone(id, card);
+  });
+
+  if(item.type === "value"){
+    const input = card.querySelector("[data-input]");
+    const fb = card.querySelector("[data-fb]");
+    const check = card.querySelector("[data-check]");
+    const doCheck = ()=>{
+      const v = input.value.trim().replace(/\s+/g,"").toLowerCase();
+      const a = String(item.ans).trim().toLowerCase();
+      if(v === ""){ fb.textContent=""; return; }
+      if(v === a){
+        fb.textContent = "✓ richtig"; fb.className = "feedback ok";
+        markDone(id, card);
+      } else {
+        fb.textContent = "✗ nochmal versuchen"; fb.className = "feedback no";
+      }
+    };
+    check.addEventListener("click", doCheck);
+    input.addEventListener("keydown", e=>{ if(e.key==="Enter") doCheck(); });
+  }
+});
+
+/* ---------- Fortschritt ---------- */
+const pfill = document.getElementById("pfill");
+const pdone = document.getElementById("pdone");
+function markDone(id, card){
+  if(!doneSet.has(id)){
+    doneSet.add(id);
+    card.classList.add("done");
+    pdone.textContent = doneSet.size;
+    pfill.style.width = (doneSet.size/total*100) + "%";
+  }
+}
+</script>
+</body>
+</html>
