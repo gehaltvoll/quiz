@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>range() verstehen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1115;
+    --panel:#171a21;
+    --panel-2:#1d212a;
+    --line:#2a2f3a;
+    --text:#e6e9ef;
+    --muted:#8b93a3;
+    --accent:#4ec9b0;      /* türkis – range / werte */
+    --accent-2:#dcb67a;    /* gold – index */
+    --accent-3:#569cd6;    /* blau – variable i */
+    --danger:#e06c75;
+    --code:#c8ccd4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    line-height:1.55;
+    padding:32px 20px 80px;
+    background-image:radial-gradient(circle at 15% -10%,rgba(78,201,176,.07),transparent 40%),
+                     radial-gradient(circle at 90% 0%,rgba(86,156,214,.06),transparent 40%);
+    min-height:100vh;
+  }
+  .wrap{max-width:1000px;margin:0 auto}
+  header{margin-bottom:28px;border-bottom:1px solid var(--line);padding-bottom:20px}
+  h1{font-size:1.7rem;font-weight:700;letter-spacing:-.02em}
+  h1 code{font-family:'JetBrains Mono',monospace;color:var(--accent);font-size:1.5rem}
+  .sub{color:var(--muted);margin-top:6px;font-size:.95rem}
+
+  .tabs{display:flex;gap:8px;margin:24px 0 20px;flex-wrap:wrap}
+  .tab{
+    font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;
+    background:var(--panel);color:var(--muted);border:1px solid var(--line);
+    padding:10px 18px;border-radius:10px;cursor:pointer;transition:all .15s;
+  }
+  .tab:hover{color:var(--text);border-color:#3a4150}
+  .tab.active{background:var(--panel-2);color:var(--text);border-color:var(--accent)}
+
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px}
+  .panel h2{font-size:1.05rem;font-weight:700;margin-bottom:4px}
+  .panel h2 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:9px;vertical-align:middle}
+  .hint{color:var(--muted);font-size:.88rem;margin-bottom:18px}
+
+  .controls{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+  .ctrl{display:flex;flex-direction:column;gap:6px}
+  .ctrl label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:500}
+  .ctrl input[type=number],.ctrl input[type=text]{
+    font-family:'JetBrains Mono',monospace;font-size:1rem;
+    background:var(--bg);color:var(--text);border:1px solid var(--line);
+    border-radius:9px;padding:10px 12px;width:110px;transition:border-color .15s;
+  }
+  .ctrl input[type=text]{width:320px;max-width:60vw}
+  .ctrl input:focus{outline:none;border-color:var(--accent)}
+  .ctrl input:invalid{border-color:var(--danger)}
+
+  .code{
+    font-family:'JetBrains Mono',monospace;font-size:.95rem;line-height:1.7;
+    background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:10px;padding:16px 18px;margin:18px 0;color:var(--code);white-space:pre;overflow-x:auto;
+  }
+  .kw{color:#c586c0}      /* for, in */
+  .fn{color:#dcdcaa}      /* range, print, len */
+  .var{color:var(--accent-3)}
+  .num{color:#b5cea8}
+  .str{color:var(--accent)}
+
+  .seq{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{
+    font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:500;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    padding:7px 12px;min-width:40px;text-align:center;
+    animation:pop .25s ease both;
+  }
+  .chip.val{color:var(--accent);border-color:rgba(78,201,176,.4)}
+  .chip.idx{color:var(--accent-2);border-color:rgba(220,182,122,.4)}
+  @keyframes pop{from{opacity:0;transform:translateY(6px) scale(.9)}to{opacity:1;transform:none}}
+
+  .meta{color:var(--muted);font-size:.85rem;margin:14px 0 4px;font-family:'JetBrains Mono',monospace}
+  .meta b{color:var(--text)}
+  .err{color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:.9rem;margin-top:10px}
+
+  /* Trace-Tabelle */
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:.92rem}
+  th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:500;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+  td.iter{color:var(--muted)}
+  td.i{color:var(--accent-3);font-weight:500}
+  td.out{color:var(--accent)}
+  tbody tr:hover{background:var(--panel-2)}
+
+  /* Array-Visualisierung */
+  .array{display:flex;flex-wrap:wrap;gap:4px;margin-top:14px}
+  .cell{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .cell .box{
+    font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:500;
+    width:54px;height:54px;display:flex;align-items:center;justify-content:center;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:9px;color:var(--accent);
+    transition:all .2s;
+  }
+  .cell .box.active{border-color:var(--accent);background:rgba(78,201,176,.12);transform:translateY(-3px)}
+  .cell .ix{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--accent-2)}
+  .legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;font-size:.82rem;color:var(--muted)}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Die Funktion <code>range()</code> verstehen</h1>
+    <p class="sub">Probieren Sie beide Varianten aus: die Zählschleife mit Variable und den Zugriff über den Index einer Liste.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-mode="range">range(start, stop, step)</button>
+    <button class="tab" data-mode="list">range(len(liste))</button>
+  </div>
+
+  <!-- ====================== MODUS 1: range() ====================== -->
+  <section id="mode-range">
+    <div class="panel">
+      <h2><span class="dot" style="background:var(--accent)"></span>Die Zählschleife</h2>
+      <p class="hint"><code style="font-family:'JetBrains Mono',monospace;color:var(--accent-3)">range(start, stop, step)</code> erzeugt eine Folge von Zahlen. <b>stop</b> ist nie dabei – es wird davor abgebrochen.</p>
+
+      <div class="controls">
+        <div class="ctrl">
+          <label>start</label>
+          <input type="number" id="r-start" value="101" step="1">
+        </div>
+        <div class="ctrl">
+          <label>stop (exklusiv)</label>
+          <input type="number" id="r-stop" value="2" step="1">
+        </div>
+        <div class="ctrl">
+          <label>step</label>
+          <input type="number" id="r-step" value="-1" step="1">
+        </div>
+      </div>
+
+      <div class="code" id="r-code"></div>
+      <div class="meta" id="r-meta"></div>
+      <div class="err hidden" id="r-err"></div>
+
+      <p class="meta" style="margin-top:18px">Erzeugte Zahlenfolge:</p>
+      <div class="seq" id="r-seq"></div>
+
+      <p class="meta" style="margin-top:22px">Ablauf der Schleife (was <code style="font-family:'JetBrains Mono',monospace;color:var(--accent-3)">print(i)</code> ausgibt):</p>
+      <div style="overflow-x:auto">
+        <table id="r-trace">
+          <thead><tr><th>Durchlauf</th><th>i</th><th>Ausgabe</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== MODUS 2: range(len(liste)) ====================== -->
+  <section id="mode-list" class="hidden">
+    <div class="panel">
+      <h2><span class="dot" style="background:var(--accent-2)"></span>Zugriff über den Index</h2>
+      <p class="hint"><code style="font-family:'JetBrains Mono',monospace;color:var(--accent-2)">range(len(liste))</code> erzeugt genau die <b>Indizes</b> 0, 1, 2 … bis zum letzten Element. Mit <code style="font-family:'JetBrains Mono',monospace;color:var(--accent)">liste[i]</code> greifen Sie auf das Element an dieser Position zu.</p>
+
+      <div class="controls">
+        <div class="ctrl">
+          <label>liste = [ … ]</label>
+          <input type="text" id="l-input" value="3, 5, 6, 7, 3, 4, 5, 7" placeholder="z.B. 3, 5, 6, 7">
+        </div>
+      </div>
+
+      <div class="code" id="l-code"></div>
+      <div class="meta" id="l-meta"></div>
+      <div class="err hidden" id="l-err"></div>
+
+      <p class="meta" style="margin-top:18px">Die Liste mit ihren Indizes:</p>
+      <div class="array" id="l-array"></div>
+
+      <p class="meta" style="margin-top:22px">Ablauf der Schleife (was <code style="font-family:'JetBrains Mono',monospace;color:var(--accent)">print(liste[i])</code> ausgibt):</p>
+      <div style="overflow-x:auto">
+        <table id="l-trace">
+          <thead><tr><th>Durchlauf</th><th>i</th><th>liste[i]</th><th>Ausgabe</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="legend">
+        <span><i style="background:var(--accent-2)"></i> i = Index (Position)</span>
+        <span><i style="background:var(--accent)"></i> liste[i] = Wert an der Position</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const MAX = 500; // Schutz gegen riesige Folgen
+
+/* ---------- Tab-Umschaltung ---------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const m=t.dataset.mode;
+    document.getElementById('mode-range').classList.toggle('hidden',m!=='range');
+    document.getElementById('mode-list').classList.toggle('hidden',m!=='list');
+  });
+});
+
+/* ---------- Hilfsfunktion: range nachbauen ---------- */
+function buildRange(start,stop,step){
+  const out=[];
+  if(step>0){ for(let i=start;i<stop;i+=step){ out.push(i); if(out.length>MAX) break; } }
+  else if(step<0){ for(let i=start;i>stop;i+=step){ out.push(i); if(out.length>MAX) break; } }
+  return out;
+}
+
+/* ====================== MODUS 1 ====================== */
+const rStart=document.getElementById('r-start'),
+      rStop=document.getElementById('r-stop'),
+      rStep=document.getElementById('r-step');
+
+function renderRange(){
+  const start=parseInt(rStart.value,10);
+  const stop=parseInt(rStop.value,10);
+  const step=parseInt(rStep.value,10);
+  const codeEl=document.getElementById('r-code');
+  const errEl=document.getElementById('r-err');
+  const metaEl=document.getElementById('r-meta');
+  const seqEl=document.getElementById('r-seq');
+  const traceBody=document.querySelector('#r-trace tbody');
+
+  codeEl.innerHTML =
+    `<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="num">${isNaN(start)?'?':start}</span>, <span class="num">${isNaN(stop)?'?':stop}</span>, <span class="num">${isNaN(step)?'?':step}</span>):\n    <span class="fn">print</span>(<span class="var">i</span>)`;
+
+  if([start,stop,step].some(isNaN)){ return; }
+
+  if(step===0){
+    errEl.classList.remove('hidden');
+    errEl.textContent='ValueError: range() arg 3 must not be zero  →  step darf nicht 0 sein.';
+    metaEl.textContent=''; seqEl.innerHTML=''; traceBody.innerHTML='';
+    return;
+  }
+  errEl.classList.add('hidden');
+
+  const vals=buildRange(start,stop,step);
+  const capped=vals.length>MAX;
+
+  // Meta-Info
+  if(vals.length===0){
+    metaEl.innerHTML=`Ergebnis: <b>leere Folge</b> – die Schleife läuft 0-mal (Richtung von step passt nicht zu start/stop).`;
+  }else{
+    metaEl.innerHTML=`Ergebnis: <b>${vals.length}${capped?'+':''}</b> Zahlen, von <b>${vals[0]}</b> bis <b>${vals[vals.length-1]}</b>.`;
+  }
+
+  // Chips
+  seqEl.innerHTML='';
+  vals.forEach((v,k)=>{
+    const c=document.createElement('div');
+    c.className='chip val'; c.textContent=v;
+    c.style.animationDelay=(Math.min(k,40)*0.012)+'s';
+    seqEl.appendChild(c);
+  });
+  if(capped){
+    const more=document.createElement('div');
+    more.className='chip'; more.style.color='var(--muted)'; more.textContent='…';
+    seqEl.appendChild(more);
+  }
+
+  // Trace (erste ~12 + letzte 2)
+  traceBody.innerHTML='';
+  const show=[];
+  if(vals.length<=14){ vals.forEach((v,k)=>show.push([k,v])); }
+  else{
+    for(let k=0;k<12;k++) show.push([k,vals[k]]);
+    show.push(['…','…']);
+    show.push([vals.length-1,vals[vals.length-1]]);
+  }
+  show.forEach(([k,v])=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="iter">${k==='…'?'…':k+1}.</td><td class="i">${v}</td><td class="out">${v}</td>`;
+    traceBody.appendChild(tr);
+  });
+}
+[rStart,rStop,rStep].forEach(el=>el.addEventListener('input',renderRange));
+renderRange();
+
+/* ====================== MODUS 2 ====================== */
+const lInput=document.getElementById('l-input');
+
+function parseList(str){
+  return str.split(',').map(s=>s.trim()).filter(s=>s.length>0);
+}
+
+function renderList(){
+  const items=parseList(lInput.value);
+  const codeEl=document.getElementById('l-code');
+  const metaEl=document.getElementById('l-meta');
+  const errEl=document.getElementById('l-err');
+  const arrEl=document.getElementById('l-array');
+  const traceBody=document.querySelector('#l-trace tbody');
+
+  const listStr=items.join(', ');
+  codeEl.innerHTML =
+    `<span class="var">liste</span> = [${items.map(it=>isNaN(it)?`<span class="str">"${it}"</span>`:`<span class="num">${it}</span>`).join(', ')}]\n`+
+    `<span class="kw">for</span> <span class="var">i</span> <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(<span class="var">liste</span>)):\n`+
+    `    <span class="fn">print</span>(<span class="var">liste</span>[<span class="var">i</span>])`;
+
+  if(items.length===0){
+    errEl.classList.remove('hidden');
+    errEl.textContent='Die Liste ist leer – die Schleife läuft 0-mal.';
+    metaEl.textContent=''; arrEl.innerHTML=''; traceBody.innerHTML='';
+    return;
+  }
+  errEl.classList.add('hidden');
+  metaEl.innerHTML=`<b>len(liste) = ${items.length}</b>  →  range(${items.length}) erzeugt die Indizes 0 bis ${items.length-1}.`;
+
+  // Array-Visualisierung
+  arrEl.innerHTML='';
+  items.forEach((it,k)=>{
+    const cell=document.createElement('div');
+    cell.className='cell';
+    cell.innerHTML=`<div class="box" data-k="${k}">${it}</div><div class="ix">${k}</div>`;
+    arrEl.appendChild(cell);
+  });
+
+  // Trace
+  traceBody.innerHTML='';
+  items.forEach((it,k)=>{
+    const tr=document.createElement('tr');
+    tr.dataset.k=k;
+    tr.innerHTML=`<td class="iter">${k+1}.</td><td class="i">${k}</td><td class="out" style="color:var(--accent-2)">liste[${k}]</td><td class="out">${it}</td>`;
+    tr.addEventListener('mouseenter',()=>{
+      const b=arrEl.querySelector(`.box[data-k="${k}"]`);
+      if(b) b.classList.add('active');
+    });
+    tr.addEventListener('mouseleave',()=>{
+      const b=arrEl.querySelector(`.box[data-k="${k}"]`);
+      if(b) b.classList.remove('active');
+    });
+    traceBody.appendChild(tr);
+  });
+}
+lInput.addEventListener('input',renderList);
+renderList();
+</script>
+</body>
+</html>
