@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marktmodell — Angebot, Nachfrage & Wohlfahrt</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f4f1ea;
+    --ink: #1c1a17;
+    --paper: #fbfaf6;
+    --line: #d8d2c4;
+    --demand: #c0392b;      /* Nachfrage – warmes Rot */
+    --supply: #1f6f8b;      /* Angebot – Petrol */
+    --ks: #e8b84b;          /* Konsumentenrente – Gold */
+    --ps: #6a9e7a;          /* Produzentenrente – Salbeigrün */
+    --accent: #b35900;
+    --muted: #6e675b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Spline Sans', sans-serif;
+    background: var(--bg);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0);
+    background-size: 22px 22px;
+    color: var(--ink);
+    line-height: 1.5;
+    padding: clamp(16px, 3vw, 40px);
+    min-height: 100vh;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  header.masthead {
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 18px;
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header.masthead .kicker {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  header.masthead h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  header.masthead .meta {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } }
+
+  .chart-col { display: flex; flex-direction: column; gap: 20px; }
+
+  /* Wohlfahrt + Erklärung nebeneinander unter dem Diagramm */
+  .insights {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (max-width: 620px) { .insights { grid-template-columns: 1fr; } }
+
+  .chart-card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 rgba(28,26,23,0.12);
+    padding: 18px;
+  }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  .axis-line { stroke: var(--ink); stroke-width: 1.8; }
+  .grid-line { stroke: var(--line); stroke-width: 1; }
+  .curve { fill: none; stroke-width: 3; stroke-linecap: round; }
+  .curve.demand { stroke: var(--demand); }
+  .curve.supply { stroke: var(--supply); }
+  .curve.ghost { stroke-width: 2; stroke-dasharray: 5 5; opacity: 0.4; }
+  .eq-line { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 3 4; opacity: 0.6; }
+  .eq-dot { fill: var(--ink); }
+  .curve-label {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .axis-label {
+    font-family: 'Spline Sans', sans-serif;
+    font-size: 12px;
+    fill: var(--muted);
+  }
+  .axis-title {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-style: italic;
+    fill: var(--ink);
+  }
+
+  .panel { display: flex; flex-direction: column; gap: 20px; }
+
+  .controls {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    padding: 18px 20px;
+    box-shadow: 6px 6px 0 rgba(28,26,23,0.12);
+  }
+  .controls h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+  .controls .sub {
+    font-size: 0.78rem; color: var(--muted); margin-bottom: 16px;
+  }
+
+  .ctrl { margin-bottom: 18px; }
+  .ctrl-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .ctrl-head .name { font-weight: 600; font-size: 0.9rem; }
+  .ctrl-head .val {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.78rem; color: var(--accent);
+  }
+  .ctrl-tag {
+    display: inline-block;
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 6px; border-radius: 3px; margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-d { background: rgba(192,57,43,0.14); color: var(--demand); }
+  .tag-s { background: rgba(31,111,139,0.14); color: var(--supply); }
+
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px; border-radius: 2px;
+    background: var(--line); outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--paper); border: 2.5px solid var(--ink);
+    box-shadow: 1px 1px 0 rgba(28,26,23,0.3); cursor: pointer;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--paper); border: 2.5px solid var(--ink); cursor: pointer;
+  }
+
+  .scenarios { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .scenario-btn {
+    font-family: 'Spline Sans', sans-serif;
+    font-size: 0.74rem; font-weight: 500;
+    padding: 7px 11px;
+    background: var(--paper); color: var(--ink);
+    border: 1.5px solid var(--ink); border-radius: 3px;
+    cursor: pointer; transition: all 0.15s ease;
+  }
+  .scenario-btn:hover { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
+
+  .group-label {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase;
+    margin: 14px 0 8px; padding-bottom: 4px;
+    border-bottom: 1.5px solid;
+  }
+  .tag-d-label { color: var(--demand); border-color: var(--demand); }
+  .tag-s-label { color: var(--supply); border-color: var(--supply); }
+
+  .reasons { display: flex; flex-direction: column; gap: 6px; }
+  .reason {
+    display: flex; align-items: stretch;
+    border: 1.5px solid var(--ink); border-radius: 4px; overflow: hidden;
+  }
+  .reason .reason-name {
+    flex: 1; padding: 7px 10px;
+    font-size: 0.78rem; font-weight: 500;
+    display: flex; align-items: center;
+    background: var(--paper);
+  }
+  .reason .dir-btn {
+    min-width: 78px; padding: 0 10px;
+    border: none; border-left: 1.5px solid var(--ink);
+    background: var(--paper); cursor: pointer;
+    font-size: 0.74rem; font-weight: 600; color: var(--muted);
+    transition: all 0.12s ease;
+    display: flex; align-items: center; justify-content: center; gap: 4px;
+    white-space: nowrap;
+  }
+  .reason .dir-btn .arrow { font-size: 0.7rem; opacity: 0.7; }
+  .reason .dir-btn:hover { background: rgba(0,0,0,0.05); }
+  .reason .dir-btn.active-right { background: var(--ps); color: #fff; border-color: var(--ps); }
+  .reason .dir-btn.active-right .arrow { opacity: 1; }
+  .reason .dir-btn.active-left { background: var(--demand); color: #fff; border-color: var(--demand); }
+  .reason .dir-btn.active-left .arrow { opacity: 1; }
+  /* alte active-Klasse (Rückwärtskompatibilität) — keine Wirkung mehr */
+  .reason .dir-btn.up.active { background: var(--ps); color: #fff; }
+  .reason .dir-btn.down.active { background: var(--demand); color: #fff; }
+  .reset-btn {
+    width: 100%; margin-top: 8px;
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 9px; background: transparent; color: var(--muted);
+    border: 1px dashed var(--line); border-radius: 3px; cursor: pointer;
+  }
+  .reset-btn:hover { color: var(--ink); border-color: var(--ink); }
+
+  .legend {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    padding: 16px 20px;
+    box-shadow: 6px 6px 0 rgba(28,26,23,0.12);
+  }
+  .legend h2 { font-family: 'Fraunces', serif; font-size: 1.1rem; margin-bottom: 12px; }
+  .stat-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--line);
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { display: flex; align-items: center; gap: 9px; font-size: 0.86rem; }
+  .swatch { width: 16px; height: 16px; border-radius: 3px; border: 1.5px solid var(--ink); flex-shrink: 0; }
+  .sw-ks { background: var(--ks); }
+  .sw-ps { background: var(--ps); }
+  .sw-total { background: repeating-linear-gradient(45deg, var(--ks), var(--ks) 6px, var(--ps) 6px, var(--ps) 12px); }
+  .sw-dwl { background: repeating-linear-gradient(45deg, #c0392b, #c0392b 4px, #f2f2f2 4px, #f2f2f2 8px); }
+  .stat-row.dwl { border-top: 1px dotted var(--demand); }
+  .stat-val {
+    font-family: 'Spline Sans Mono', monospace; font-weight: 500;
+    font-size: 0.92rem;
+  }
+  .stat-row.total { margin-top: 4px; padding-top: 12px; border-top: 2px solid var(--ink); }
+  .stat-row.total .stat-label { font-weight: 600; }
+  .delta { font-size: 0.7rem; font-family: 'Spline Sans Mono', monospace; margin-left: 6px; }
+  .delta.up { color: var(--ps); }
+  .delta.down { color: var(--demand); }
+
+  .explain {
+    background: var(--ink); color: var(--paper);
+    border-radius: 4px; padding: 16px 20px;
+    box-shadow: 6px 6px 0 rgba(28,26,23,0.12);
+  }
+  .explain h2 { font-family: 'Fraunces', serif; font-size: 1rem; margin-bottom: 8px; color: var(--ks); }
+  .explain p { font-size: 0.84rem; line-height: 1.55; }
+  .explain p strong { color: var(--ks); }
+
+  .footnote {
+    margin-top: 28px; padding-top: 14px; border-top: 1px solid var(--line);
+    font-family: 'Spline Sans Mono', monospace; font-size: 0.68rem; color: var(--muted);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  .price-fan { fill: var(--ks); opacity: 0.55; }
+  .ps-area { fill: var(--ps); opacity: 0.55; }
+
+  .price-section {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1.5px dashed var(--line);
+  }
+  .price-toggle {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 0.9rem; cursor: pointer;
+  }
+  .price-toggle input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+  .price-hint { font-size: 0.72rem; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+  .price-hint strong { color: var(--ink); }
+
+  .elast-section {
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1.5px dashed var(--line);
+  }
+  .scale-ends {
+    display: flex; justify-content: space-between;
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.58rem; color: var(--muted);
+    margin-top: 3px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <div>
+      <div class="kicker">EWR · Mikroökonomie · Klasse 3p</div>
+      <h1>Angebot, Nachfrage &amp; Wohlfahrt</h1>
+    </div>
+    <div class="meta">Interaktives Modell<br>Habegger · Marktgleichgewicht</div>
+  </header>
+
+  <div class="layout">
+    <!-- LINKE SPALTE: Diagramm + Wohlfahrt + Erklärung -->
+    <div class="chart-col">
+    <!-- DIAGRAMM -->
+    <div class="chart-card">
+      <svg id="chart" viewBox="0 0 560 460" xmlns="http://www.w3.org/2000/svg" aria-label="Angebots- und Nachfragediagramm">
+        <defs>
+          <!-- Plotbereich-Maske: alles, was darüber hinausragt, wird abgeschnitten -->
+          <clipPath id="plotClip">
+            <rect x="60" y="20" width="460" height="380"></rect>
+          </clipPath>
+        </defs>
+        <!-- Gitter (innerhalb Plotbereich, kein Clip nötig) -->
+        <g id="grid"></g>
+        <!-- Alle datenbezogenen Elemente werden am Plotbereich abgeschnitten -->
+        <g clip-path="url(#plotClip)">
+          <!-- Flächen (Renten) -->
+          <path id="ksArea" class="price-fan" d=""></path>
+          <path id="psArea" class="ps-area" d=""></path>
+          <!-- Geisterkurven (Ausgangslage) -->
+          <line id="ghostD" class="curve demand ghost" x1="0" y1="0" x2="0" y2="0"></line>
+          <line id="ghostS" class="curve supply ghost" x1="0" y1="0" x2="0" y2="0"></line>
+          <!-- aktive Kurven -->
+          <line id="curveD" class="curve demand" x1="0" y1="0" x2="0" y2="0"></line>
+          <line id="curveS" class="curve supply" x1="0" y1="0" x2="0" y2="0"></line>
+          <!-- Gleichgewicht -->
+          <line id="eqV" class="eq-line" x1="0" y1="0" x2="0" y2="0"></line>
+          <line id="eqH" class="eq-line" x1="0" y1="0" x2="0" y2="0"></line>
+          <!-- Über-/Unterangebot-Band -->
+          <path id="imbalance" d="" fill="#1f6f8b" opacity="0.25"></path>
+          <!-- Wohlfahrtsverlust-Dreieck -->
+          <path id="dwlArea" d="" fill="none"></path>
+          <circle id="eqDot" class="eq-dot" r="5"></circle>
+        </g>
+        <!-- Labels außerhalb des Clips, damit sie auch am Rand sichtbar sind -->
+        <text id="imbLabel" class="curve-label" text-anchor="middle" font-weight="600"></text>
+        <!-- Achsen -->
+        <line class="axis-line" x1="60" y1="20" x2="60" y2="400"></line>
+        <line class="axis-line" x1="60" y1="400" x2="520" y2="400"></line>
+        <!-- Achsentitel -->
+        <text class="axis-title" x="28" y="16">Preis</text>
+        <text class="axis-title" x="470" y="430">Menge</text>
+        <!-- Kurvenlabels -->
+        <text id="lblD" class="curve-label" fill="#c0392b">N</text>
+        <text id="lblS" class="curve-label" fill="#1f6f8b">A</text>
+        <text id="lblEq" class="axis-label" font-weight="600"></text>
+      </svg>
+    </div>
+
+      <div class="insights">
+      <div class="legend">
+        <h2>Wohlfahrt</h2>
+        <div class="stat-row">
+          <span class="stat-label"><span class="swatch sw-ks"></span> Konsumentenrente</span>
+          <span><span class="stat-val" id="ksVal">0</span><span class="delta" id="ksDelta"></span></span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label"><span class="swatch sw-ps"></span> Produzentenrente</span>
+          <span><span class="stat-val" id="psVal">0</span><span class="delta" id="psDelta"></span></span>
+        </div>
+        <div class="stat-row total">
+          <span class="stat-label"><span class="swatch sw-total"></span> Gesamtwohlfahrt</span>
+          <span><span class="stat-val" id="totalVal">0</span><span class="delta" id="totalDelta"></span></span>
+        </div>
+        <div class="stat-row dwl" id="dwlRow" style="display:none;">
+          <span class="stat-label"><span class="swatch sw-dwl"></span> Wohlfahrtsverlust</span>
+          <span class="stat-val" id="dwlVal" style="color:var(--demand);">0</span>
+        </div>
+        <div style="margin-top:10px; font-size:0.7rem; color:var(--muted); font-family:'Spline Sans Mono',monospace;">
+          Preis <span id="eqPrice">–</span> · gehandelte Menge <span id="eqQty">–</span>
+        </div>
+      </div>
+
+      <div class="explain">
+        <h2 id="expTitle">Was zeigt das Modell?</h2>
+        <p id="expText">Im Gleichgewicht treffen sich Angebot und Nachfrage. Die <strong>Konsumentenrente</strong> ist der Vorteil der Käufer (Zahlungsbereitschaft minus Preis), die <strong>Produzentenrente</strong> der Vorteil der Anbieter (Preis minus Kosten). Zusammen ergeben sie die <strong>Gesamtwohlfahrt</strong>.</p>
+      </div>
+      </div>
+    </div>
+
+    <!-- RECHTE SPALTE: Steuerung -->
+    <div class="panel">
+      <div class="controls">
+        <h2>Gründe für die Verschiebung</h2>
+        <div class="sub">Wählen Sie einen Grund und die Richtung (▲ / ▼). Mit den Reglern unten können Sie zusätzlich frei verschieben.</div>
+
+        <div class="group-label tag-d-label">Nachfragekurve verschieben</div>
+        <div class="reasons" id="reasonsD"></div>
+
+        <div class="group-label tag-s-label">Angebotskurve verschieben</div>
+        <div class="reasons" id="reasonsS"></div>
+
+        <button class="reset-btn" id="reset">↺ Ausgangslage</button>
+
+        <div style="height:10px"></div>
+
+        <div class="ctrl">
+          <div class="ctrl-head">
+            <span class="name">Nachfrage (frei) <span class="ctrl-tag tag-d">N</span></span>
+            <span class="val" id="valD">0</span>
+          </div>
+          <input type="range" id="shiftD" min="-100" max="100" value="0">
+        </div>
+
+        <div class="ctrl">
+          <div class="ctrl-head">
+            <span class="name">Angebot (frei) <span class="ctrl-tag tag-s">A</span></span>
+            <span class="val" id="valS">0</span>
+          </div>
+          <input type="range" id="shiftS" min="-100" max="100" value="0">
+        </div>
+
+        <div class="elast-section">
+          <div class="group-label" style="color:var(--ink); border-color:var(--ink);">Elastizität · Steigung der Kurven</div>
+          <div class="price-hint" style="margin-bottom:10px;">Flache Kurve = <strong>elastisch</strong> (Menge reagiert stark auf den Preis), steile Kurve = <strong>unelastisch</strong>. Die Kurven drehen sich um das Gleichgewicht.</div>
+
+          <div class="ctrl">
+            <div class="ctrl-head">
+              <span class="name">Nachfrage <span class="ctrl-tag tag-d">N</span></span>
+              <span class="val" id="valED">mittel</span>
+            </div>
+            <input type="range" id="elastD" min="-100" max="100" value="0">
+            <div class="scale-ends"><span>senkrecht</span><span>mittel</span><span>waagrecht</span></div>
+          </div>
+
+          <div class="ctrl">
+            <div class="ctrl-head">
+              <span class="name">Angebot <span class="ctrl-tag tag-s">A</span></span>
+              <span class="val" id="valES">mittel</span>
+            </div>
+            <input type="range" id="elastS" min="-100" max="100" value="0">
+            <div class="scale-ends"><span>senkrecht</span><span>mittel</span><span>waagrecht</span></div>
+          </div>
+        </div>
+
+        <div class="price-section">
+          <label class="price-toggle">
+            <input type="checkbox" id="manualToggle">
+            <span>Preis selbst bestimmen</span>
+          </label>
+          <div class="price-hint">Setzen Sie einen Preis abseits des Gleichgewichts, um <strong>Überangebot</strong> und <strong>Übernachfrage</strong> zu zeigen.</div>
+          <div class="ctrl" id="priceCtrl" style="opacity:0.4; pointer-events:none; margin-top:10px;">
+            <div class="ctrl-head">
+              <span class="name">Preis</span>
+              <span class="val" id="valPrice">50</span>
+            </div>
+            <input type="range" id="priceSlider" min="0" max="100" value="50" disabled>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <span>Modell stark vereinfacht (lineare Kurven) · für den Unterricht</span>
+    <span>EWR 3p · Habegger</span>
+  </div>
+</div>
+
+<script>
+// ===== Geometrie des Plotbereichs =====
+const X0 = 60, X1 = 520, Y0 = 400, Y1 = 20;  // Achsenursprung & Grenzen
+const PW = X1 - X0, PH = Y0 - Y1;
+
+// Modell: Preis P und Menge Q im Bereich 0..100 (Diagrammeinheiten)
+// Nachfrage:  P = aD - bD*Q   (fallend)
+// Angebot:    P = aS + bS*Q   (steigend)
+// Verschiebungen shiftD/shiftS verschieben die Achsenabschnitte aD/aS.
+
+const BASE = { aD: 90, bD: 0.8, aS: 10, bS: 0.7 };
+let state = { shiftD: 0, shiftS: 0, elastD: 0, elastS: 0, manualPrice: false, price: 50 };
+let baseline = null;  // Ausgangs-Wohlfahrt zum Vergleich
+
+// Umrechnung Modell -> SVG
+function sx(q) { return X0 + (q / 100) * PW; }
+function sy(p) { return Y0 - (p / 100) * PH; }
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function computeModel(s) {
+  // Verschiebungen so skaliert (Faktor 35), dass der Schnittpunkt auch bei
+  // Extremstellungen der Regler (±100) sicher im Bereich 0..100 bleibt.
+  const aD0 = BASE.aD + s.shiftD / 100 * 35;
+  const aS0 = BASE.aS - s.shiftS / 100 * 35;
+  const bD0 = BASE.bD, bS0 = BASE.bS;
+
+  // Gleichgewicht mit den BASIS-Steigungen bestimmen (Lage des Drehpunkts)
+  const Qe = clamp((aD0 - aS0) / (bD0 + bS0), 0, 100);
+  const Pe = clamp(aD0 - bD0 * Qe, 0, 100);
+
+  // Elastizität -> Kurventyp + Steigung.
+  // elast in [-100..100]:  -100 = senkrecht (vollk. unelastisch),
+  //   0 = mittel,  +100 = waagrecht (vollk. elastisch).
+  // Dazwischen: endliche Steigung, Kurve dreht um (Qe, Pe).
+  function geom(elast, b0, isDemand) {
+    if (elast <= -100) return { kind: 'vertical' };     // senkrecht: Q = Qe
+    if (elast >=  100) return { kind: 'horizontal' };   // waagrecht: P = Pe
+    // endliche Steigung: factor 2.5^(e/100); flacher = kleiner b
+    const b = b0 / Math.pow(2.5, elast / 100);
+    // Achsenabschnitt so, dass Kurve durch (Qe, Pe) geht
+    const a = isDemand ? (Pe + b * Qe) : (Pe - b * Qe);
+    return { kind: 'linear', b, a };
+  }
+  const gD = geom(s.elastD, bD0, true);
+  const gS = geom(s.elastS, bS0, false);
+
+  // Preis-bei-Menge-Funktionen (für Zeichnung der Kurven)
+  // Nachfrage
+  function priceD(q) {
+    if (gD.kind === 'horizontal') return Pe;
+    if (gD.kind === 'vertical') return null; // senkrecht: kein eindeutiger P(q)
+    return gD.a - gD.b * q;
+  }
+  function priceS(q) {
+    if (gS.kind === 'horizontal') return Pe;
+    if (gS.kind === 'vertical') return null;
+    return gS.a + gS.b * q;
+  }
+  // Menge-bei-Preis (für nachgefragte/angebotene Menge bei manuellem Preis)
+  function qtyD(p) {
+    if (gD.kind === 'vertical') return Qe;        // senkrecht: Menge fix
+    if (gD.kind === 'horizontal') return (p <= Pe ? 100 : 0); // waagrecht: alles oder nichts
+    return clamp((gD.a - p) / gD.b, 0, 100);
+  }
+  function qtyS(p) {
+    if (gS.kind === 'vertical') return Qe;
+    if (gS.kind === 'horizontal') return (p >= Pe ? 100 : 0);
+    return clamp((gS.a + p) / gS.b, 0, 100);
+  }
+
+  const P = s.manualPrice ? clamp(s.price, 0, 100) : Pe;
+  const Qd = qtyD(P);
+  const Qs = qtyS(P);
+
+  return { gD, gS, Pe, Qe, P, Qd, Qs, priceD, priceS, qtyD, qtyS };
+}
+
+function curveEndpoints(m) {
+  // Liefert die zwei Bildschirm-Endpunkte je Kurve, je nach Typ.
+  function ends(g, priceFn, atQe) {
+    if (g.kind === 'vertical') {
+      // senkrechte Linie bei Q = Qe, von P=0 bis P=100
+      return { x1: sx(m.Qe), y1: sy(0), x2: sx(m.Qe), y2: sy(100) };
+    }
+    if (g.kind === 'horizontal') {
+      // waagrechte Linie bei P = Pe, von Q=0 bis Q=100
+      return { x1: sx(0), y1: sy(m.Pe), x2: sx(100), y2: sy(m.Pe) };
+    }
+    // linear: von Q=0 bis Q=100
+    return { x1: sx(0), y1: sy(priceFn(0)), x2: sx(100), y2: sy(priceFn(100)) };
+  }
+  return {
+    d: ends(m.gD, m.priceD),
+    s: ends(m.gS, m.priceS)
+  };
+}
+
+// Renten als Flächen zwischen Kurve und Preislinie.
+// Bei manuellem Preis wird nur die kürzere Marktseite gehandelt (Q = min(Qd, Qs)).
+function surplus(m) {
+  const Q = m.manual ? Math.min(m.Qd, m.Qs) : m.Qe;
+
+  // Höhe der Nachfragekurve bei Menge q (für KS-Trapez).
+  // Bei senkrechter Nachfrage ist die Zahlungsbereitschaft unbegrenzt hoch
+  // -> wir deckeln auf den sichtbaren Bereich (100), damit die Fläche endlich bleibt.
+  function dAt(q) {
+    if (m.gD.kind === 'vertical') return 100;          // senkrecht: Deckel
+    if (m.gD.kind === 'horizontal') return m.Pe;       // waagrecht: auf Preisniveau
+    return m.gD.a - m.gD.b * q;
+  }
+  function sAt(q) {
+    if (m.gS.kind === 'vertical') return 0;            // senkrecht: Kosten ab 0
+    if (m.gS.kind === 'horizontal') return m.Pe;       // waagrecht: auf Preisniveau
+    return m.gS.a + m.gS.b * q;
+  }
+
+  // Konsumentenrente: Trapez zwischen Nachfragekurve und Preis über [0, Q]
+  const ks = 0.5 * ((dAt(0) - m.P) + (dAt(Q) - m.P)) * Q;
+  // Produzentenrente: Trapez zwischen Preis und Angebotskurve über [0, Q]
+  const ps = 0.5 * ((m.P - sAt(0)) + (m.P - sAt(Q)) ) * Q;
+
+  // Maximale Wohlfahrt (im Gleichgewicht): Fläche zwischen den Kurven bis Qe
+  const maxTotal = 0.5 * ((dAt(0) - sAt(0)) + (dAt(m.Qe) - sAt(m.Qe))) * m.Qe;
+  const dwl = Math.max(0, maxTotal - (ks + ps));
+
+  return {
+    ks: Math.max(0, ks),
+    ps: Math.max(0, ps),
+    total: Math.max(0, ks + ps),
+    dwl,
+    Q,
+    dAt, sAt
+  };
+}
+
+function draw() {
+  const m = computeModel(state);
+  const ep = curveEndpoints(m);
+
+  // aktive Kurven
+  setLine('curveD', ep.d);
+  setLine('curveS', ep.s);
+
+  const su = surplus(m);
+  const Q = su.Q;                    // tatsächlich gehandelte Menge
+  const px = sx(Q), py = sy(m.P);    // Punkt (Q, P) auf der Preislinie
+
+  // Gleichgewichtspunkt (immer der echte Schnittpunkt)
+  const ex = sx(m.Qe), ey = sy(m.Pe);
+  document.getElementById('eqDot').setAttribute('cx', ex);
+  document.getElementById('eqDot').setAttribute('cy', ey);
+
+  // Preislinie: bei manuellem Preis waagrecht über die ganze Breite, sonst zum GG
+  if (state.manualPrice) {
+    setLineRaw('eqH', X0, py, X1, py);
+    setLineRaw('eqV', px, Y0, px, py);
+  } else {
+    setLineRaw('eqH', X0, ey, ex, ey);
+    setLineRaw('eqV', ex, Y0, ex, ey);
+  }
+
+  // Renten-Flächen (bis zur gehandelten Menge Q) — typsicher über dAt/sAt
+  const dEndP = su.dAt(Q);
+  const sEndP = su.sAt(Q);
+  const dStartP = su.dAt(0);
+  const sStartP = su.sAt(0);
+  document.getElementById('ksArea').setAttribute('d',
+    `M ${sx(0)} ${sy(m.P)} L ${sx(0)} ${sy(dStartP)} L ${sx(Q)} ${sy(dEndP)} L ${sx(Q)} ${sy(m.P)} Z`);
+  document.getElementById('psArea').setAttribute('d',
+    `M ${sx(0)} ${sy(sStartP)} L ${sx(0)} ${sy(m.P)} L ${sx(Q)} ${sy(m.P)} L ${sx(Q)} ${sy(sEndP)} Z`);
+
+  // Über-/Unterangebot visualisieren
+  drawImbalance(m);
+
+  // Kurvenlabels am sichtbaren Kurvenende platzieren (an der Stelle, wo
+  // die Kurve den Plot-Rand verlässt — sonst säßen Labels ausserhalb).
+  const pD = clipLineEnd(ep.d);
+  const pS = clipLineEnd(ep.s);
+  placeLabel('lblD', pD.x - 18, pD.y - 6);
+  placeLabel('lblS', pS.x - 18, pS.y - 6);
+  const lblEq = document.getElementById('lblEq');
+  lblEq.setAttribute('x', ex + 8); lblEq.setAttribute('y', ey - 8);
+  lblEq.textContent = 'GG';
+
+  // Werte — KS und PS gerundet; Gesamtwohlfahrt als SUMME der gerundeten
+  // Einzelwerte, damit die Anzeige immer exakt aufgeht (KS + PS = Total).
+  if (!baseline) baseline = su;
+  const ksR = Math.round(su.ks);
+  const psR = Math.round(su.ps);
+  const totalR = ksR + psR;
+  document.getElementById('ksVal').textContent = ksR;
+  document.getElementById('psVal').textContent = psR;
+  document.getElementById('totalVal').textContent = totalR;
+  document.getElementById('eqPrice').textContent = Math.round(m.P);
+  document.getElementById('eqQty').textContent = Math.round(Q);
+
+  // Wohlfahrtsverlust-Zeile (nur bei spürbarem Verlust sichtbar)
+  const dwlRow = document.getElementById('dwlRow');
+  if (su.dwl > 0.5) {
+    dwlRow.style.display = 'flex';
+    document.getElementById('dwlVal').textContent = '−' + Math.round(su.dwl);
+  } else {
+    dwlRow.style.display = 'none';
+  }
+
+  setDelta('ksDelta', su.ks - baseline.ks);
+  setDelta('psDelta', su.ps - baseline.ps);
+  setDelta('totalDelta', su.total - baseline.total);
+
+  document.getElementById('valD').textContent = (state.shiftD > 0 ? '+' : '') + state.shiftD;
+  document.getElementById('valS').textContent = (state.shiftS > 0 ? '+' : '') + state.shiftS;
+
+  updateImbalanceText(m);
+}
+
+// Zeichnet die Lücke zwischen Qd und Qs bei manuellem Preis + Wohlfahrtsverlust-Dreieck
+function drawImbalance(m) {
+  const band = document.getElementById('imbalance');
+  const lbl = document.getElementById('imbLabel');
+  const dwl = document.getElementById('dwlArea');
+
+  if (!state.manualPrice || Math.abs(m.Qd - m.Qs) < 0.5) {
+    band.setAttribute('d', '');
+    dwl.setAttribute('d', '');
+    lbl.textContent = '';
+    return;
+  }
+  const y = sy(m.P);
+  const xLo = sx(Math.min(m.Qd, m.Qs));
+  const xHi = sx(Math.max(m.Qd, m.Qs));
+  // dünnes Band auf der Preislinie zwischen Qd und Qs
+  band.setAttribute('d', `M ${xLo} ${y-5} L ${xHi} ${y-5} L ${xHi} ${y+5} L ${xLo} ${y+5} Z`);
+  const isUeberangebot = m.Qs > m.Qd; // Angebot > Nachfrage => Überangebot
+  band.setAttribute('fill', isUeberangebot ? '#1f6f8b' : '#c0392b');
+  band.setAttribute('opacity', '0.25');
+  lbl.setAttribute('x', (xLo + xHi) / 2);
+  lbl.setAttribute('y', y - 10);
+  lbl.setAttribute('fill', isUeberangebot ? '#1f6f8b' : '#c0392b');
+  lbl.textContent = isUeberangebot ? 'Überangebot' : 'Übernachfrage';
+
+  // Wohlfahrtsverlust-Dreieck: zwischen gehandelter Menge Qt und Gleichgewichtsmenge Qe,
+  // begrenzt von Nachfrage- (oben) und Angebotskurve (unten).
+  const Qt = Math.min(m.Qd, m.Qs);   // tatsächlich gehandelt
+  const Qe = m.Qe;
+  const dQt = m.priceD(Qt);          // Nachfragekurve bei Qt (null bei senkrecht)
+  const sQt = m.priceS(Qt);          // Angebotskurve bei Qt
+  if (Math.abs(Qe - Qt) > 0.5 && dQt != null && sQt != null) {
+    dwl.setAttribute('d',
+      `M ${sx(Qt)} ${sy(dQt)} L ${sx(Qt)} ${sy(sQt)} L ${sx(Qe)} ${sy(m.Pe)} Z`);
+    dwl.setAttribute('fill', '#c0392b');
+    dwl.setAttribute('opacity', '0.35');
+    dwl.setAttribute('stroke', '#c0392b');
+    dwl.setAttribute('stroke-width', '1');
+  } else {
+    dwl.setAttribute('d', '');
+  }
+}
+
+function updateImbalanceText(m) {
+  if (!state.manualPrice) return;
+  const diff = m.Qs - m.Qd;
+  if (Math.abs(diff) < 0.5) {
+    document.getElementById('expTitle').textContent = 'Markt im Gleichgewicht';
+    document.getElementById('expText').innerHTML = 'Bei diesem Preis stimmen angebotene und nachgefragte Menge überein. Es gibt weder Überschuss noch Knappheit.';
+  } else if (diff > 0) {
+    document.getElementById('expTitle').textContent = 'Überangebot (Angebotsüberschuss)';
+    document.getElementById('expText').innerHTML = 'Der Preis liegt <strong>über</strong> dem Gleichgewicht. Die Anbieter wollen mehr verkaufen, als die Käufer abnehmen — es entsteht ein <strong>Überangebot</strong>. Tendenz: Der Preis sinkt Richtung Gleichgewicht.';
+  } else {
+    document.getElementById('expTitle').textContent = 'Übernachfrage (Nachfrageüberschuss)';
+    document.getElementById('expText').innerHTML = 'Der Preis liegt <strong>unter</strong> dem Gleichgewicht. Die Käufer wollen mehr kaufen, als angeboten wird — es entsteht eine <strong>Übernachfrage</strong> (Knappheit). Tendenz: Der Preis steigt Richtung Gleichgewicht.';
+  }
+}
+
+function setDelta(id, d) {
+  const el = document.getElementById(id);
+  if (Math.abs(d) < 0.5) { el.textContent = ''; el.className = 'delta'; return; }
+  const r = Math.round(d);
+  el.textContent = (r > 0 ? '▲ +' : '▼ ') + r;
+  el.className = 'delta ' + (r > 0 ? 'up' : 'down');
+}
+
+function setLine(id, e) { setLineRaw(id, e.x1, e.y1, e.x2, e.y2); }
+function setLineRaw(id, x1, y1, x2, y2) {
+  const el = document.getElementById(id);
+  el.setAttribute('x1', x1); el.setAttribute('y1', y1);
+  el.setAttribute('x2', x2); el.setAttribute('y2', y2);
+}
+function placeLabel(id, x, y) {
+  const el = document.getElementById(id);
+  el.setAttribute('x', x); el.setAttribute('y', y);
+}
+
+// Liefert den Endpunkt einer Linie {x1,y1,x2,y2} so, dass er sicher im
+// Plot-Rechteck (X0..X1, Y1..Y0) liegt. Wenn die Linie über den Rand
+// hinausgeht, wird der Schnittpunkt mit dem Rand zurückgegeben.
+function clipLineEnd(e) {
+  const inside = (x, y) => x >= X0 - 0.5 && x <= X1 + 0.5 && y >= Y1 - 0.5 && y <= Y0 + 0.5;
+  if (inside(e.x2, e.y2)) return { x: e.x2, y: e.y2 };
+  const dx = e.x2 - e.x1, dy = e.y2 - e.y1;
+  let tBest = 1;
+  // Schnittpunkte mit den vier Rändern; nimm das kleinste t in (0..1]
+  if (dx !== 0) {
+    for (const xLim of [X0, X1]) {
+      const t = (xLim - e.x1) / dx;
+      if (t > 0 && t <= 1) {
+        const y = e.y1 + t * dy;
+        if (y >= Y1 - 0.5 && y <= Y0 + 0.5) tBest = Math.min(tBest, t);
+      }
+    }
+  }
+  if (dy !== 0) {
+    for (const yLim of [Y1, Y0]) {
+      const t = (yLim - e.y1) / dy;
+      if (t > 0 && t <= 1) {
+        const x = e.x1 + t * dx;
+        if (x >= X0 - 0.5 && x <= X1 + 0.5) tBest = Math.min(tBest, t);
+      }
+    }
+  }
+  return { x: e.x1 + tBest * dx, y: e.y1 + tBest * dy };
+}
+
+// Gitter & Geisterkurven (Ausgangslage) zeichnen
+function initGrid() {
+  const g = document.getElementById('grid');
+  for (let i = 1; i <= 5; i++) {
+    const y = Y0 - (i / 5) * PH;
+    g.innerHTML += `<line class="grid-line" x1="${X0}" y1="${y}" x2="${X1}" y2="${y}"></line>`;
+    const x = X0 + (i / 5) * PW;
+    g.innerHTML += `<line class="grid-line" x1="${x}" y1="${Y1}" x2="${x}" y2="${Y0}"></line>`;
+  }
+  const m0 = computeModel({ shiftD: 0, shiftS: 0 });
+  const ep0 = curveEndpoints(m0);
+  setLine('ghostD', ep0.d);
+  setLine('ghostS', ep0.s);
+}
+
+// ===== Verschiebungsgründe (aus dem Lehrbuch) =====
+// curve: 'd' = Nachfrage, 's' = Angebot
+// up:   { label, shift, text }  Richtung "Kurve nach rechts" (Angebot/Nachfrage steigt)
+// down: { label, shift, text }  Richtung "Kurve nach links"  (Angebot/Nachfrage sinkt)
+const MAG = 100; // Verschiebungsstärke (Reglerwert)
+
+const REASONS_D = [
+  { id: 'einkommen', name: 'Einkommen',
+    up:   { label: 'steigt', effect: 'rechts', text: 'Steigt das Einkommen der Haushalte, fragen sie bei normalen Gütern mehr nach. Die <strong>Nachfrage steigt</strong> (Kurve nach rechts): Preis und Menge steigen.' },
+    down: { label: 'sinkt',  effect: 'links',  text: 'Sinkt das Einkommen, wird weniger nachgefragt. Die <strong>Nachfrage sinkt</strong> (Kurve nach links): Preis und Menge sinken.' } },
+  { id: 'anzahlN', name: 'Anzahl Nachfrager',
+    up:   { label: 'steigt', effect: 'rechts', text: 'Kommen mehr Nachfrager auf den Markt (z.B. Zuwanderung), <strong>steigt die Nachfrage</strong> (Kurve nach rechts): Preis und Menge steigen.' },
+    down: { label: 'sinkt',  effect: 'links',  text: 'Verlassen Nachfrager den Markt, <strong>sinkt die Nachfrage</strong> (Kurve nach links): Preis und Menge sinken.' } },
+  { id: 'substN', name: 'Preis von Substitutionsgütern',
+    up:   { label: 'steigt', effect: 'rechts', text: 'Wird ein Ersatzgut (Substitut) teurer, weichen Käufer auf unser Gut aus. Die <strong>Nachfrage steigt</strong> (Kurve nach rechts): Preis und Menge steigen.' },
+    down: { label: 'sinkt',  effect: 'links',  text: 'Wird das Ersatzgut billiger, wandern Käufer dorthin ab. Die <strong>Nachfrage sinkt</strong> (Kurve nach links): Preis und Menge sinken.' } },
+  { id: 'komplN', name: 'Preis von Komplementärgütern',
+    up:   { label: 'steigt', effect: 'links',  text: 'Wird das Ergänzungsgut (Komplement, z.B. Benzin zum Auto) teurer, sinkt die Attraktivität unseres Guts. Die <strong>Nachfrage sinkt</strong> (Kurve nach links): Preis und Menge sinken.' },
+    down: { label: 'sinkt',  effect: 'rechts', text: 'Wird das Ergänzungsgut billiger, wird unser Gut attraktiver. Die <strong>Nachfrage steigt</strong> (Kurve nach rechts): Preis und Menge steigen.' } },
+  { id: 'praef', name: 'Präferenzen / Beliebtheit',
+    up:   { label: 'steigt', effect: 'rechts', text: 'Wird das Gut beliebter (Trend, Mode), steigt die Zahlungsbereitschaft. Die <strong>Nachfrage steigt</strong> (Kurve nach rechts): Preis und Menge steigen.' },
+    down: { label: 'sinkt',  effect: 'links',  text: 'Verliert das Gut an Beliebtheit, <strong>sinkt die Nachfrage</strong> (Kurve nach links): Preis und Menge sinken.' } }
+];
+
+const REASONS_S = [
+  { id: 'vorleist', name: 'Preis für Vorleistungen',
+    up:   { label: 'steigt', effect: 'links',  text: 'Werden Vorleistungen (Rohstoffe, Energie, Löhne) teurer, steigen die Produktionskosten. Das <strong>Angebot sinkt</strong> (Kurve nach links): Preis steigt, Menge sinkt.' },
+    down: { label: 'sinkt',  effect: 'rechts', text: 'Werden Vorleistungen billiger, sinken die Produktionskosten. Das <strong>Angebot steigt</strong> (Kurve nach rechts): Preis sinkt, Menge steigt.' } },
+  { id: 'produkt', name: 'Produktivität',
+    up:   { label: 'steigt', effect: 'rechts', text: 'Steigt die Produktivität (z.B. neue Technologie), kann günstiger produziert werden. Das <strong>Angebot steigt</strong> (Kurve nach rechts): Preis sinkt, Menge steigt.' },
+    down: { label: 'sinkt',  effect: 'links',  text: 'Sinkt die Produktivität, wird die Produktion teurer. Das <strong>Angebot sinkt</strong> (Kurve nach links): Preis steigt, Menge sinkt.' } },
+  { id: 'substS', name: 'Preis Substitutionsgüter (Produktion)',
+    up:   { label: 'steigt', effect: 'links',  text: 'Wird ein alternativ herstellbares Gut lukrativer, lenken Anbieter ihre Kapazitäten dorthin. Das <strong>Angebot sinkt</strong> (Kurve nach links): Preis steigt, Menge sinkt.' },
+    down: { label: 'sinkt',  effect: 'rechts', text: 'Wird ein in der Produktion konkurrierendes Gut weniger lukrativ, lohnt sich unser Gut mehr. Das <strong>Angebot steigt</strong> (Kurve nach rechts): Preis sinkt, Menge steigt.' } },
+  { id: 'anzahlA', name: 'Anzahl Anbieter',
+    up:   { label: 'steigt', effect: 'rechts', text: 'Treten mehr Anbieter in den Markt ein, <strong>steigt das Angebot</strong> (Kurve nach rechts): Preis sinkt, Menge steigt.' },
+    down: { label: 'sinkt',  effect: 'links',  text: 'Verlassen Anbieter den Markt, <strong>sinkt das Angebot</strong> (Kurve nach links): Preis steigt, Menge sinkt.' } }
+];
+
+// aktiver Grund je Kurve (damit nur einer pro Seite aktiv ist)
+let activeReason = { d: null, s: null };
+
+function buildReasonRow(curve, r) {
+  const row = document.createElement('div');
+  row.className = 'reason';
+
+  const name = document.createElement('span');
+  name.className = 'reason-name';
+  name.textContent = r.name;
+
+  const up = document.createElement('button');
+  up.className = 'dir-btn up';
+  up.innerHTML = '<span class="arrow">▲</span><span>' + r.up.label + '</span>';
+  up.title = r.name + ' ' + r.up.label;
+
+  const down = document.createElement('button');
+  down.className = 'dir-btn down';
+  down.innerHTML = '<span class="arrow">▼</span><span>' + r.down.label + '</span>';
+  down.title = r.name + ' ' + r.down.label;
+
+  up.onclick   = () => triggerReason(curve, r, 'up', up, down);
+  down.onclick = () => triggerReason(curve, r, 'down', up, down);
+
+  row.append(name, down, up);
+  return row;
+}
+
+function clearActive(curve) {
+  document.querySelectorAll('#reasons' + curve.toUpperCase() + ' .dir-btn')
+    .forEach(b => { b.classList.remove('active'); b.classList.remove('active-right'); b.classList.remove('active-left'); });
+}
+
+function triggerReason(curve, r, dir, upBtn, downBtn) {
+  clearActive(curve);
+  const info = r[dir];
+  // effect bestimmt Verschiebungsrichtung: 'rechts' = +MAG, 'links' = -MAG.
+  // (Das ist nicht zwingend dasselbe wie der Pfeil — z.B. Vorleistung steigt ⇒ Angebot sinkt = nach links.)
+  const sign = info.effect === 'rechts' ? 1 : -1;
+  const shift = sign * MAG;
+
+  // Aktiv-Stil je nach Kurvenwirkung (rechts = grün, links = rot) statt nach Pfeilrichtung
+  const btn = (dir === 'up' ? upBtn : downBtn);
+  btn.classList.add(info.effect === 'rechts' ? 'active-right' : 'active-left');
+  activeReason[curve] = { r, dir };
+
+  if (curve === 'd') animateTo(shift, state.shiftS);
+  else               animateTo(state.shiftD, shift);
+
+  document.getElementById('expTitle').textContent = r.name + ' ' + info.label;
+  document.getElementById('expText').innerHTML = info.text;
+}
+
+function initReasons() {
+  const boxD = document.getElementById('reasonsD');
+  const boxS = document.getElementById('reasonsS');
+  REASONS_D.forEach(r => boxD.appendChild(buildReasonRow('d', r)));
+  REASONS_S.forEach(r => boxS.appendChild(buildReasonRow('s', r)));
+}
+
+function animateTo(td, ts) {
+  const sd = state.shiftD, ss = state.shiftS;
+  const steps = 24; let k = 0;
+  const iv = setInterval(() => {
+    k++;
+    const t = k / steps;
+    const e = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    state.shiftD = Math.round(sd + (td - sd) * e);
+    state.shiftS = Math.round(ss + (ts - ss) * e);
+    document.getElementById('shiftD').value = state.shiftD;
+    document.getElementById('shiftS').value = state.shiftS;
+    draw();
+    if (k >= steps) clearInterval(iv);
+  }, 18);
+}
+
+// ===== Events =====
+document.getElementById('shiftD').addEventListener('input', e => {
+  state.shiftD = +e.target.value; clearActive('d'); activeReason.d = null; draw();
+});
+document.getElementById('shiftS').addEventListener('input', e => {
+  state.shiftS = +e.target.value; clearActive('s'); activeReason.s = null; draw();
+});
+
+// Elastizität (Steigung) der Kurven
+function elastLabel(v) {
+  if (v <= -100) return 'senkrecht · vollk. unelastisch';
+  if (v <= -45) return 'sehr steil';
+  if (v < -10) return 'steil';
+  if (v <= 10) return 'mittel';
+  if (v < 45) return 'flach';
+  if (v < 100) return 'sehr flach';
+  return 'waagrecht · vollk. elastisch';
+}
+document.getElementById('elastD').addEventListener('input', e => {
+  state.elastD = +e.target.value;
+  document.getElementById('valED').textContent = elastLabel(state.elastD);
+  draw();
+});
+document.getElementById('elastS').addEventListener('input', e => {
+  state.elastS = +e.target.value;
+  document.getElementById('valES').textContent = elastLabel(state.elastS);
+  draw();
+});
+
+document.getElementById('reset').addEventListener('click', () => {
+  clearActive('d'); clearActive('s');
+  activeReason = { d: null, s: null };
+  // Elastizität zurücksetzen
+  state.elastD = 0; state.elastS = 0;
+  document.getElementById('elastD').value = 0;
+  document.getElementById('elastS').value = 0;
+  document.getElementById('valED').textContent = 'mittel';
+  document.getElementById('valES').textContent = 'mittel';
+  // Preismodus zurücksetzen
+  state.manualPrice = false;
+  document.getElementById('manualToggle').checked = false;
+  document.getElementById('priceSlider').disabled = true;
+  document.getElementById('priceCtrl').style.opacity = '0.4';
+  document.getElementById('priceCtrl').style.pointerEvents = 'none';
+  animateTo(0, 0);
+  document.getElementById('expTitle').textContent = 'Was zeigt das Modell?';
+  document.getElementById('expText').innerHTML = 'Im Gleichgewicht treffen sich Angebot und Nachfrage. Die <strong>Konsumentenrente</strong> ist der Vorteil der Käufer (Zahlungsbereitschaft minus Preis), die <strong>Produzentenrente</strong> der Vorteil der Anbieter (Preis minus Kosten). Zusammen ergeben sie die <strong>Gesamtwohlfahrt</strong>.';
+});
+
+// Preis-Modus umschalten
+document.getElementById('manualToggle').addEventListener('change', e => {
+  state.manualPrice = e.target.checked;
+  const ctrl = document.getElementById('priceCtrl');
+  const slider = document.getElementById('priceSlider');
+  if (state.manualPrice) {
+    // Slider auf aktuellen Gleichgewichtspreis vorbelegen
+    const m = computeModel(state);
+    state.price = Math.round(m.Pe);
+    slider.value = state.price;
+    document.getElementById('valPrice').textContent = state.price;
+    ctrl.style.opacity = '1';
+    ctrl.style.pointerEvents = 'auto';
+    slider.disabled = false;
+  } else {
+    ctrl.style.opacity = '0.4';
+    ctrl.style.pointerEvents = 'none';
+    slider.disabled = true;
+    document.getElementById('expTitle').textContent = 'Marktgleichgewicht';
+    document.getElementById('expText').innerHTML = 'Im Gleichgewicht treffen sich Angebot und Nachfrage. Konsumenten- und Produzentenrente sind zusammen maximal — die Gesamtwohlfahrt ist am grössten.';
+  }
+  draw();
+});
+
+document.getElementById('priceSlider').addEventListener('input', e => {
+  state.price = +e.target.value;
+  document.getElementById('valPrice').textContent = state.price;
+  draw();
+});
+
+// ===== Start =====
+initGrid();
+initReasons();
+draw();
+</script>
+</body>
+</html>
