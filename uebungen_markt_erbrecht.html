@@ -177,7 +177,7 @@
   <div id="quiz"></div>
 
   <div class="note">
-    <b>Hinweis zu den Pflichtteilen:</b> Die Aufgaben verwenden bewusst die Werte aus eurem Lehrmittel (Nachkommen ¾, Eltern ½, Ehegatte ½), da die Prüfung auf diesem Stand basiert.
+    <b>Hinweis zu den Pflichtteilen (geltendes Recht seit 1.&nbsp;Januar 2023):</b> Nachkommen ½, Ehegatte/eingetragener Partner ½, Eltern&nbsp;= kein Pflichtteil mehr. Die <b>gesetzlichen Erbquoten</b> (Parentelen, Ehegatten-Anteile) sind durch die Revision unverändert geblieben. <b>Achtung:</b> Euer Lehrmittel von 2019 nennt noch die alten Werte (Nachkommen ¾, Eltern ½) – prüft, welchen Stand eure Lehrperson an der Prüfung verlangt.
   </div>
 
   <footer>
@@ -408,20 +408,20 @@ const Q = [
  opts:["Wenn man keine Lust zum Schreiben hat","In einer Notsituation, z. B. bei Todesgefahr, vor zwei Zeugen","Immer, sofern ein Notar anwesend ist","Nur für Beträge unter 1'000 Fr."],
  a:1, sol:"Das mündliche Nottestament ist eine Ausnahme für Notsituationen (z. B. Todesgefahr). Der Erblasser verfügt mündlich vor zwei Zeugen, die die Verfügung danach schriftlich festhalten und beim Gericht einreichen (Art. 506 ff. ZGB)."},
 
-{s:"22.3",lz:"LZ 36",type:"mc",q:"Wie hoch ist der Pflichtteil der Nachkommen (gemäss Lehrmittel)?",
- opts:["½ des gesetzlichen Erbanspruchs","¾ des gesetzlichen Erbanspruchs","Die ganze Erbschaft","Kein Pflichtteil"],
- a:1, sol:"Nachkommen: ¾ des gesetzlichen Erbanspruchs (Art. 471 Ziff. 1 ZGB, Lehrmittelstand). Eltern und Ehegatte: je ½ des gesetzlichen Erbanspruchs. Andere Erben (z. B. Geschwister): kein Pflichtteil."},
+{s:"22.3",lz:"LZ 36",type:"mc",q:"Wie hoch ist der Pflichtteil der Nachkommen nach geltendem Recht (seit 1.1.2023)?",
+ opts:["¼ des gesetzlichen Erbanspruchs","½ des gesetzlichen Erbanspruchs","¾ des gesetzlichen Erbanspruchs","Die ganze Erbschaft"],
+ a:1, sol:"Seit der Erbrechtsrevision 2023 beträgt der Pflichtteil der Nachkommen ½ des gesetzlichen Erbanspruchs (Art. 471 ZGB; früher ¾). Der Ehegatte/eingetragene Partner bleibt bei ½. Die Eltern haben gar keinen Pflichtteil mehr (Art. 470 Abs. 1 ZGB). Übrige Erben (z. B. Geschwister): nie ein Pflichtteil."},
 
 {s:"22.3",lz:"LZ 36",type:"open",q:"Erklären Sie die Begriffe «Pflichtteil» und «freie Quote».",
  sol:"Der Pflichtteil ist der gesetzlich geschützte Mindestanteil, der den nächsten Verwandten und dem überlebenden Ehegatten/eingetragenen Partner zusteht; über ihn kann der Erblasser nicht frei verfügen. Die freie Quote (verfügbarer Teil) ist der Anteil der Erbschaft, über den der Erblasser frei verfügen kann (z. B. zugunsten Dritter)."},
 
-{s:"22.3",lz:"LZ 37",type:"calc",q:"Eine Erblasserin hinterlässt Ehegatte und Nachkommen. Ehegatte: gesetzl. Anspruch ½, Pflichtteil ¼. Nachkommen: gesetzl. ½, Pflichtteil ⅜. Wie gross ist die freie Quote (als Bruch mit Nenner 8, geben Sie den Zähler ein)?",
- ans:3, tol:0.01, unit:"/ 8",
- sol:"Pflichtteile: Ehegatte ¼ = 2/8, Nachkommen 3/8. Summe = 5/8. Freie Quote = 1 − 5/8 = 3/8. Zähler = 3."},
-
-{s:"22.3",lz:"LZ 37",type:"calc",q:"Ein Erblasser hinterlässt Ehefrau und Eltern. Ehefrau: gesetzl. ¾, Pflichtteil ⅜. Eltern: gesetzl. ¼, Pflichtteil ⅛. Wie gross ist die freie Quote (Nenner 8, Zähler eingeben)?",
+{s:"22.3",lz:"LZ 37",type:"calc",q:"Eine Erblasserin hinterlässt Ehegatte und Nachkommen. Ehegatte: gesetzl. Anspruch ½, Pflichtteil ¼. Nachkommen: gesetzl. ½, Pflichtteil ¼ (geltendes Recht). Wie gross ist die freie Quote (als Bruch mit Nenner 8, geben Sie den Zähler ein)?",
  ans:4, tol:0.01, unit:"/ 8 ( = ½ )",
- sol:"Pflichtteile: Ehefrau ⅜, Eltern ⅛. Summe = 4/8. Freie Quote = 1 − 4/8 = 4/8 = ½. Zähler = 4. Der Erblasser kann also über die Hälfte frei verfügen."},
+ sol:"Pflichtteile: Ehegatte ¼ = 2/8, Nachkommen ¼ = 2/8 (seit 2023 nur noch ½ ihres Anspruchs). Summe = 4/8. Freie Quote = 1 − 4/8 = 4/8 = ½. Zähler = 4. (Nach altem Recht betrug die freie Quote nur ⅜, weil die Nachkommen ¾ als Pflichtteil hatten.)"},
+
+{s:"22.3",lz:"LZ 37",type:"calc",q:"Ein Erblasser hinterlässt Ehefrau und Eltern. Ehefrau: gesetzl. ¾, Pflichtteil ⅜. Eltern: gesetzl. ¼, aber KEIN Pflichtteil (geltendes Recht). Wie gross ist die freie Quote (Nenner 8, Zähler eingeben)?",
+ ans:5, tol:0.01, unit:"/ 8",
+ sol:"Pflichtteile: Ehefrau ⅜, Eltern kein Pflichtteil mehr (seit 2023, Art. 470 Abs. 1 ZGB). Summe = 3/8. Freie Quote = 1 − 3/8 = 5/8. Zähler = 5. Der Erblasser kann also über ⅝ frei verfügen (nach altem Recht nur über ½)."},
 
 {s:"22.3",lz:"LZ 38",type:"open",q:"Unter welchen Voraussetzungen ist eine Enterbung möglich?",
  sol:"Eine Enterbung (Entzug des Pflichtteils) ist ausnahmsweise möglich, wenn: (1) der Erbe eine schwere Straftat gegen den Erblasser oder eine ihm nahestehende Person begangen hat, oder (2) der Erbe seine familienrechtlichen Pflichten gegenüber dem Erblasser oder dessen Angehörigen schwer verletzt hat (z. B. geschuldete Unterhaltszahlungen trotz finanzieller Möglichkeit nicht geleistet hat)."},
