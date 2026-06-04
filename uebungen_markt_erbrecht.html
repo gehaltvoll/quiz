@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>50 Übungsaufgaben – Markt & Erbrecht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4efe6;
+    --paper-2:#ece4d6;
+    --ink:#26211c;
+    --ink-soft:#5c544a;
+    --line:#d8cdb9;
+    --markt:#3f6b35;
+    --markt-soft:#e3ecd9;
+    --markt-deep:#2c4d24;
+    --erb:#34618f;
+    --erb-soft:#dde7f1;
+    --erb-deep:#264866;
+    --right:#3f6b35;
+    --wrong:#b23b2e;
+    --gold:#b8893b;
+    --shadow:0 1px 0 rgba(0,0,0,.04), 0 12px 30px -18px rgba(38,33,28,.5);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Hanken Grotesk",sans-serif;
+    background:
+      radial-gradient(circle at 12% -5%, #fbf7ef 0%, transparent 40%),
+      radial-gradient(circle at 90% 110%, #efe7d8 0%, transparent 45%),
+      var(--paper);
+    color:var(--ink);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* subtle paper grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 22px 120px;position:relative;z-index:1}
+
+  /* ---------- header ---------- */
+  header{padding:64px 0 26px;border-bottom:2px solid var(--ink);margin-bottom:8px}
+  .kicker{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+  h1{font-family:"Fraunces",serif;font-weight:900;font-size:clamp(2.4rem,7vw,4.1rem);line-height:.96;letter-spacing:-.02em;margin:.18em 0 .25em}
+  h1 em{font-style:italic;font-weight:500;color:var(--markt)}
+  .lead{font-size:1.02rem;color:var(--ink-soft);max-width:54ch}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font-size:.82rem;color:var(--ink-soft)}
+  .meta b{color:var(--ink);font-weight:600}
+
+  /* ---------- sticky progress ---------- */
+  .dash{position:sticky;top:0;z-index:20;background:rgba(244,239,230,.82);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);margin:0 -22px 30px;padding:11px 22px;display:flex;align-items:center;gap:16px}
+  .bar{flex:1;height:7px;background:var(--paper-2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--markt),var(--erb));transition:width .4s cubic-bezier(.2,.7,.3,1)}
+  .score{font-size:.8rem;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .score b{font-family:"Fraunces",serif;font-size:1.05rem}
+  .reset{font:inherit;font-size:.74rem;font-weight:600;border:1px solid var(--line);background:transparent;color:var(--ink-soft);
+    padding:5px 11px;border-radius:99px;cursor:pointer;white-space:nowrap}
+  .reset:hover{border-color:var(--ink);color:var(--ink)}
+
+  /* ---------- section heads ---------- */
+  .sec{margin:46px 0 22px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .sec .num{font-family:"Fraunces",serif;font-weight:900;font-size:1.5rem;letter-spacing:-.01em}
+  .sec h2{font-family:"Fraunces",serif;font-weight:600;font-size:1.55rem;letter-spacing:-.01em}
+  .sec .tag{margin-left:auto;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;padding:4px 11px;border-radius:99px}
+  .sec.m{color:var(--markt-deep)} .sec.m .tag{background:var(--markt-soft);color:var(--markt-deep)}
+  .sec.e{color:var(--erb-deep)} .sec.e .tag{background:var(--erb-soft);color:var(--erb-deep)}
+  .sec .rule{flex-basis:100%;height:2px;margin-top:4px}
+  .sec.m .rule{background:linear-gradient(90deg,var(--markt),transparent)}
+  .sec.e .rule{background:linear-gradient(90deg,var(--erb),transparent)}
+
+  /* ---------- cards ---------- */
+  .card{background:#fbf8f1;border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;margin-bottom:16px;
+    box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+  .card.m::before{background:var(--markt)} .card.e::before{background:var(--erb)}
+  .qhead{display:flex;align-items:flex-start;gap:12px;margin-bottom:13px}
+  .qnum{font-family:"Fraunces",serif;font-weight:900;font-size:1.45rem;line-height:1;min-width:1.6em;color:var(--ink)}
+  .card.m .qnum{color:var(--markt)} .card.e .qnum{color:var(--erb)}
+  .qtext{flex:1;font-size:1.04rem;font-weight:500;padding-top:2px}
+  .lz{font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);
+    border:1px solid var(--line);padding:3px 8px;border-radius:6px;white-space:nowrap;background:var(--paper)}
+
+  /* options */
+  .opts{display:flex;flex-direction:column;gap:9px;margin-top:4px}
+  .opt{display:flex;gap:11px;align-items:flex-start;text-align:left;font:inherit;font-size:.97rem;
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:11px 13px;cursor:pointer;
+    transition:border-color .15s,background .15s,transform .08s;color:var(--ink)}
+  .opt:hover:not(.locked){border-color:var(--ink-soft);transform:translateX(2px)}
+  .opt .mark{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--ink-soft);flex:0 0 auto;display:grid;place-items:center;
+    font-weight:700;font-size:.78rem;color:var(--ink-soft);margin-top:1px}
+  .opt.correct{border-color:var(--right);background:#eaf0e2}
+  .opt.correct .mark{background:var(--right);border-color:var(--right);color:#fff}
+  .opt.wrong{border-color:var(--wrong);background:#f6e6e3}
+  .opt.wrong .mark{background:var(--wrong);border-color:var(--wrong);color:#fff}
+  .opt.locked{cursor:default}
+  .opt.dim{opacity:.55}
+
+  /* true / false */
+  .tf{display:flex;gap:10px;margin-top:4px}
+  .tf button{flex:1;font:inherit;font-weight:600;font-size:.95rem;padding:12px;border-radius:10px;border:1px solid var(--line);
+    background:var(--paper);cursor:pointer;transition:.15s;color:var(--ink)}
+  .tf button:hover:not(.locked){border-color:var(--ink-soft)}
+  .tf button.correct{border-color:var(--right);background:#eaf0e2;color:var(--markt-deep)}
+  .tf button.wrong{border-color:var(--wrong);background:#f6e6e3;color:var(--wrong)}
+  .tf button.locked{cursor:default}
+
+  /* calc */
+  .calc{display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap}
+  .calc input{font:inherit;font-size:1rem;padding:10px 13px;border:1px solid var(--ink-soft);border-radius:10px;
+    background:var(--paper);width:170px;color:var(--ink)}
+  .calc input:focus{outline:2px solid var(--gold);outline-offset:1px}
+  .calc .unit{font-size:.9rem;color:var(--ink-soft)}
+  .btn{font:inherit;font-weight:600;font-size:.9rem;padding:10px 16px;border-radius:10px;border:none;cursor:pointer;color:#fff}
+  .card.m .btn{background:var(--markt)} .card.e .btn{background:var(--erb)}
+  .btn:hover{filter:brightness(1.08)}
+  .calc input.ok{border-color:var(--right);background:#eaf0e2}
+  .calc input.no{border-color:var(--wrong);background:#f6e6e3}
+
+  /* open / reveal */
+  .reveal-btn{font:inherit;font-weight:600;font-size:.85rem;margin-top:4px;background:transparent;
+    border:1px dashed var(--ink-soft);color:var(--ink-soft);padding:8px 14px;border-radius:9px;cursor:pointer}
+  .reveal-btn:hover{border-style:solid;color:var(--ink);border-color:var(--ink)}
+
+  /* feedback / solution */
+  .fb{margin-top:13px;font-size:.92rem;border-radius:10px;padding:12px 14px;display:none;line-height:1.5}
+  .fb.show{display:block;animation:pop .35s ease}
+  .fb .ti{font-weight:700;display:block;margin-bottom:3px;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+  .fb.good{background:var(--markt-soft);color:var(--markt-deep)}
+  .fb.bad{background:#f6e6e3;color:#7d2a20}
+  .fb.sol{background:var(--paper-2);color:var(--ink);border:1px solid var(--line)}
+  .fb .sol-ti{color:var(--gold)}
+  @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+  footer{margin-top:60px;padding-top:24px;border-top:2px solid var(--ink);font-size:.82rem;color:var(--ink-soft)}
+  footer b{color:var(--ink)}
+  .note{font-size:.78rem;color:var(--ink-soft);background:var(--paper-2);border:1px solid var(--line);
+    border-radius:10px;padding:12px 14px;margin:18px 0 4px;line-height:1.5}
+
+  @media print{
+    .dash,.reset,.reveal-btn,.btn{display:none!important}
+    .fb{display:block!important}
+    body{background:#fff}
+    .card{break-inside:avoid;box-shadow:none}
+  }
+  @media(max-width:560px){
+    header{padding-top:42px}
+    .calc input{width:130px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">EWR 3p · Prüfung 2 · FS 2026</div>
+    <h1>Markt &amp; <em>Erbrecht</em><br>50 Übungsaufgaben</h1>
+    <p class="lead">Repetition zu allen 38 Lernzielen. Multiple-Choice, Richtig/Falsch und Rechenaufgaben korrigieren sich selbst – bei offenen Fragen lässt sich die Musterlösung einblenden.</p>
+    <div class="meta">
+      <span><b>Kapitel 9</b> Marktwirtschaft &amp; Staat</span>
+      <span><b>Kapitel 22</b> Erbrecht</span>
+      <span><b>Tipp:</b> erst denken, dann klicken</span>
+    </div>
+  </header>
+
+  <div class="dash">
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="score">Gelöst <b id="done">0</b>/50 · Richtig <b id="ok">0</b></div>
+    <button class="reset" id="resetBtn">Zurücksetzen</button>
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="note">
+    <b>Hinweis zu den Pflichtteilen:</b> Die Aufgaben verwenden bewusst die Werte aus eurem Lehrmittel (Nachkommen ¾, Eltern ½, Ehegatte ½), da die Prüfung auf diesem Stand basiert.
+  </div>
+
+  <footer>
+    <b>Lernziele Markt &amp; Erbrecht</b> — Übungsblatt zur Selbstkontrolle. Die Lösungen folgen dem Grundlagen-Lehrmittel «Wirtschaft &amp; Recht» sowie den Art. 457 ff. ZGB. Viel Erfolg an der Prüfung!
+  </footer>
+</div>
+
+<script>
+/* ============ AUFGABEN-DATEN ============ */
+const sections = [
+  {id:"9.1", color:"m", title:"Märkte und die Rolle der Preise"},
+  {id:"9.2", color:"m", title:"Nachfrage und Angebot"},
+  {id:"9.3", color:"m", title:"Das Marktgleichgewicht"},
+  {id:"22.1", color:"e", title:"Grundlagen des Erbrechts"},
+  {id:"22.2", color:"e", title:"Gesetzliche Erben"},
+  {id:"22.3", color:"e", title:"Verfügungen von Todes wegen & Pflichtteile"},
+];
+
+const Q = [
+/* ---------- 9.1 (LZ 1–6) ---------- */
+{s:"9.1",lz:"LZ 1",type:"mc",q:"Wie lässt sich der Begriff «Markt» am treffendsten definieren?",
+ opts:["Ein physischer Ort, an dem ausschliesslich Lebensmittel verkauft werden","Das Zusammentreffen von Angebot und Nachfrage","Eine staatliche Behörde, die Preise festlegt","Der Tausch von Ware gegen Ware"],
+ a:1, sol:"Ein Markt ist das Zusammentreffen von Angebot und Nachfrage – Personen, die etwas anbieten, treffen auf Personen, die etwas nachfragen."},
+
+{s:"9.1",lz:"LZ 2",type:"mc",q:"Auf welchem Markt wird die Arbeitskraft gehandelt?",
+ opts:["Auf dem Gütermarkt","Auf dem Kapitalmarkt","Auf dem Arbeitsmarkt (einem Faktormarkt)","Auf dem Aktienmarkt"],
+ a:2, sol:"Die Arbeit ist ein Produktionsfaktor und wird auf dem Arbeitsmarkt gehandelt. Arbeits- und Kapitalmarkt zählen zu den Faktormärkten, im Gegensatz zu den Gütermärkten."},
+
+{s:"9.1",lz:"LZ 2",type:"tf",q:"Auf Gütermärkten werden die wirtschaftlichen Güter gehandelt, auf Faktormärkten die Produktionsfaktoren wie Arbeit und Kapital.",
+ a:true, sol:"Richtig. Gütermärkte = wirtschaftliche Güter; Faktormärkte = Produktionsfaktoren (Arbeitsmarkt für die Arbeit, Kapitalmarkt für die Kredite zur Finanzierung des Kapitals)."},
+
+{s:"9.1",lz:"LZ 3",type:"mc",q:"Weshalb hat sich die Marktwirtschaft gegenüber der Planwirtschaft als überlegen erwiesen?",
+ opts:["Weil der Staat alle Produktionsmittel besitzt","Weil eine zentrale Planbehörde schneller entscheiden kann","Weil ihre dezentrale Organisationsstruktur die enorme Komplexität einer Volkswirtschaft besser bewältigt","Weil in ihr keine Preise existieren"],
+ a:2, sol:"Eine zentrale Planbehörde kann die Millionen täglicher Entscheide nicht erfassen, analysieren und rechtzeitig darauf reagieren. Die dezentrale Struktur der Marktwirtschaft bewältigt diese Komplexität – das Scheitern der osteuropäischen Planwirtschaften (Fehlplanungen, Warteschlangen, leere Regale) hat dies gezeigt."},
+
+{s:"9.1",lz:"LZ 4",type:"open",q:"Beschreiben Sie das Konzept der «unsichtbaren Hand» von Adam Smith mit eigenen Worten.",
+ sol:"Jeder Marktteilnehmer (Haushalt oder Unternehmen) verfolgt in erster Linie seine eigenen, egoistischen Interessen. Nach Adam Smith führt gerade dieses Verhalten – wie von einer unsichtbaren Hand gelenkt – dazu, dass der Wohlstand der gesamten Volkswirtschaft und damit der Allgemeinheit steigt. Die koordinierende Kraft dahinter sind die Preise."},
+
+{s:"9.1",lz:"LZ 5",type:"open",q:"Benennen Sie die vier Lenkungsfunktionen des Preises und erklären Sie eine davon kurz.",
+ sol:"1) Knappheitssignal – ein hoher relativer Preis zeigt an, dass ein Gut knapp ist. 2) Allokationsfunktion – die Mittel werden dort eingesetzt, wo die grösste Knappheit herrscht. 3) Koordinationsfunktion – Preise koordinieren die Entscheide der getrennt handelnden Anbieter und Nachfrager («unsichtbare Hand»). 4) Innovationsanreiz – Knappheitssignale zeigen, wo sich Innovation lohnt, und lösen technischen Fortschritt aus."},
+
+{s:"9.1",lz:"LZ 5",type:"mc",q:"Ein hoher relativer Preis signalisiert allen Marktteilnehmern, dass ein Gut knapp ist. Welche Lenkungsfunktion beschreibt das?",
+ opts:["Koordinationsfunktion","Knappheitssignal","Innovationsanreiz","Allokationsfunktion"],
+ a:1, sol:"Das ist das Knappheitssignal: Ein hoher relativer Preis = knappes Gut, ein tiefer relativer Preis = reichlich vorhandenes Gut."},
+
+{s:"9.1",lz:"LZ 6",type:"mc",q:"Erdölkrise 1973: Forschungen zu alternativen Energieträgern werden intensiviert und neue Erdölquellen (z. B. Nordsee) erschlossen. Welche Funktion des Preises zeigt sich hier?",
+ opts:["Knappheitssignal","Allokationsfunktion","Koordinationsfunktion","Innovationsanreiz"],
+ a:3, sol:"Die Preiserhöhung löste einen Innovationsschub aus (Innovationsanreiz): Suche nach alternativen Energien und weniger energieintensiven Produktionsmethoden."},
+
+/* ---------- 9.2 (LZ 7–16) ---------- */
+{s:"9.2",lz:"LZ 7",type:"tf",q:"Das Gesetz der Nachfrage besagt: Steigt der Preis eines Gutes, sinkt – bei sonst gleichen Bedingungen – die nachgefragte Menge.",
+ a:true, sol:"Richtig. Deshalb hat die Nachfragekurve eine negative Steigung: je höher der Preis, desto weniger wird nachgefragt («ceteris paribus», also wenn alle anderen Einflüsse unverändert bleiben)."},
+
+{s:"9.2",lz:"LZ 7",type:"open",q:"Begründen Sie, weshalb die Nachfragekurve eine negative Steigung hat.",
+ sol:"Preissenkungen erhöhen in der Regel die Nachfrage, Preiserhöhungen verringern sie. Sinkt der Preis, können und wollen mehr Konsumenten kaufen (z. B. mehr telefonieren bei tieferen Gebühren); steigt er, wird gespart (z. B. weniger Autofahren bei teurem Benzin). Höherer Preis → kleinere Menge ergibt eine fallende Kurve."},
+
+{s:"9.2",lz:"LZ 8",type:"mc",q:"Was versteht man unter der «Zahlungsbereitschaft» eines Konsumenten?",
+ opts:["Den tiefsten Preis, zu dem ein Anbieter verkaufen will","Den höchsten Preis, den jemand für ein Gut zu zahlen bereit ist","Die Steuern, die beim Kauf anfallen","Das gesamte Einkommen einer Person"],
+ a:1, sol:"Die Zahlungsbereitschaft ist der maximale Preis, den ein Käufer für ein Gut zu zahlen bereit ist. Liegt der Marktpreis darunter, entsteht für ihn ein Tauschgewinn (Konsumentenrente)."},
+
+{s:"9.2",lz:"LZ 8",type:"mc",q:"Ein Konsument wäre bereit, 40 Fr. für ein Konzertticket zu zahlen, bezahlt aber nur 30 Fr. Wie hoch ist sein Tauschgewinn?",
+ opts:["30 Fr.","40 Fr.","10 Fr.","70 Fr."],
+ a:2, sol:"Tauschgewinn = Zahlungsbereitschaft − tatsächlicher Preis = 40 − 30 = 10 Fr. Der Konsument profitiert vom Tausch, weil er weniger zahlt, als ihm das Gut wert ist."},
+
+{s:"9.2",lz:"LZ 9",type:"mc",q:"Wodurch zeichnet sich das Modell des «Homo Oeconomicus» aus?",
+ opts:["Er handelt rein zufällig","Er handelt rational, eigennützig und nutzenmaximierend bei vollständiger Information","Er denkt nur an das Gemeinwohl","Er trifft keine wirtschaftlichen Entscheidungen"],
+ a:1, sol:"Der Homo Oeconomicus ist ein Modellmensch: Er handelt vollkommen rational, verfolgt seinen Eigennutzen, maximiert seinen Nutzen und verfügt über alle nötigen Informationen. Ein vereinfachendes Modell der VWL."},
+
+{s:"9.2",lz:"LZ 10",type:"mc",q:"Auf einem Markt gibt es nur einen einzigen Anbieter. Um welche Marktform handelt es sich?",
+ opts:["Polypol","Oligopol","Monopol","Konkubinat"],
+ a:2, sol:"Monopol = ein einziger Anbieter. Oligopol = wenige Anbieter. Polypol = viele Anbieter (Wettbewerb)."},
+
+{s:"9.2",lz:"LZ 10",type:"tf",q:"Bei einem Polypol stehen sich viele Anbieter und viele Nachfrager gegenüber – es herrscht Wettbewerb.",
+ a:true, sol:"Richtig. Das Polypol ist die Marktform mit vielen Anbietern (und Nachfragern), die im Wettbewerb zueinander stehen."},
+
+{s:"9.2",lz:"LZ 11",type:"mc",q:"Auf dem Milchmarkt werden bei 2 Fr./Liter 100'000 Liter nachgefragt, bei 3 Fr. nur noch 50'000 Liter. Was lässt sich daraus ablesen?",
+ opts:["Die Nachfrage steigt mit dem Preis","Eine Preiserhöhung führt zu einer kleineren nachgefragten Menge","Der Preis hat keinen Einfluss auf die Menge","Die Angebotskurve verschiebt sich"],
+ a:1, sol:"Höherer Preis → kleinere nachgefragte Menge. Steigt der Preis, bewegt man sich auf der Nachfragekurve nach links (kleinere Menge), sinkt er, nach rechts."},
+
+{s:"9.2",lz:"LZ 12",type:"mc",q:"Das Einkommen der Bevölkerung steigt und es wird zu jedem Preis mehr Milch gekauft. Wie nennt man diesen Vorgang korrekt?",
+ opts:["Bewegung entlang der Nachfragekurve","Verschiebung der gesamten Nachfragekurve nach rechts","Verschiebung der Nachfragekurve nach links","Bewegung auf der Angebotskurve"],
+ a:1, sol:"Ändert ein anderer Faktor als der Preis (hier: Einkommen), verschiebt sich die ganze Kurve. Höheres Einkommen → Verschiebung nach rechts. Eine reine Preisänderung dagegen bewegt nur einen Punkt entlang der Kurve."},
+
+{s:"9.2",lz:"LZ 12",type:"tf",q:"Eine Änderung des Preises eines Gutes verschiebt die gesamte Nachfragekurve dieses Gutes.",
+ a:false, sol:"Falsch. Eine Preisänderung führt nur zu einer Bewegung ENTLANG der Kurve. Die ganze Kurve verschiebt sich erst, wenn sich ein ANDERER Faktor ändert (Einkommen, Anzahl Nachfrager, Preise von Substitutions-/Komplementärgütern, Präferenzen)."},
+
+{s:"9.2",lz:"LZ 13",type:"open",q:"Nennen Sie die fünf Faktoren, die die Nachfragekurve verschieben können.",
+ sol:"1) Einkommen der Käufer, 2) Anzahl der Nachfrager, 3) Preis von Substitutionsgütern (ähnlichen Gütern), 4) Preis von Komplementärgütern (ergänzenden Gütern), 5) Präferenzen (Vorlieben der Konsumenten)."},
+
+{s:"9.2",lz:"LZ 13",type:"mc",q:"Der Preis für Orangensaft sinkt deutlich. Welche Auswirkung hat das auf die Nachfragekurve für Milch (ein Substitutionsgut)?",
+ opts:["Sie verschiebt sich nach rechts","Sie verschiebt sich nach links","Sie bleibt unverändert","Sie wird steiler"],
+ a:1, sol:"Orangensaft und Milch sind Substitute. Wird Orangensaft billiger, steigen viele Konsumenten um – die Nachfrage nach Milch sinkt bei jedem Preis, die Milch-Nachfragekurve verschiebt sich nach links."},
+
+{s:"9.2",lz:"LZ 13",type:"mc",q:"Der Preis für Kakaopulver steigt stark. Was passiert mit der Nachfrage nach Milch (einem Komplementärgut)?",
+ opts:["Sie steigt","Sie sinkt","Sie bleibt gleich","Milch wird zum Substitut"],
+ a:1, sol:"Kakaopulver und Milch werden oft zusammen konsumiert (Komplementärgüter). Wird Kakaopulver teurer, wird weniger Kakao und damit auch weniger Milch konsumiert – die Nachfrage nach Milch sinkt."},
+
+{s:"9.2",lz:"LZ 14",type:"mc",q:"Warum hat die Angebotskurve eine positive Steigung?",
+ opts:["Weil bei höherem Preis weniger angeboten wird","Weil der Preis keine Rolle spielt","Weil bei höherem Preis mehr Einheiten angeboten werden und der Ertrag steigt","Weil die Kosten immer konstant sind"],
+ a:2, sol:"Erhöht sich der Preis eines Produkts, lohnt es sich, mehr Einheiten anzubieten – der Ertrag steigt. Je höher der Preis, desto grösser die angebotene Menge → positive (steigende) Steigung."},
+
+{s:"9.2",lz:"LZ 15",type:"mc",q:"Bei 2 Fr./Liter werden 100'000 Liter Milch angeboten, bei 3 Fr. steigt das Angebot auf 200'000 Liter. Wie verhält sich das Angebot zum Preis?",
+ opts:["Gegenläufig (negativ)","Gleichgerichtet (positiv)","Unabhängig","Sprunghaft fallend"],
+ a:1, sol:"Steigt der Preis von 2 auf 3 Fr., steigt die angebotene Menge von 100'000 auf 200'000 Liter – Preis und Menge bewegen sich gleichgerichtet (positiver Zusammenhang)."},
+
+{s:"9.2",lz:"LZ 16",type:"open",q:"Nennen Sie die vier Faktoren, die die Angebotskurve verschieben können.",
+ sol:"1) Preise der Vorleistungen (Produktionskosten, z. B. Futtermittel), 2) Produktivität (z. B. neue Technologien), 3) Preise von Substituten in der Produktion (andere Güter, die man stattdessen herstellen könnte), 4) Anzahl der Anbieter."},
+
+{s:"9.2",lz:"LZ 16",type:"mc",q:"Eine effizientere Melkmaschine wird entwickelt und senkt die Produktionskosten. Wie wirkt sich das auf die Angebotskurve aus?",
+ opts:["Verschiebung nach links","Verschiebung nach rechts","Keine Veränderung","Sie wird zur Nachfragekurve"],
+ a:1, sol:"Steigende Produktivität senkt die Produktionskosten → zu jedem Preis wird mehr angeboten → die Angebotskurve verschiebt sich nach rechts."},
+
+{s:"9.2",lz:"LZ 16",type:"tf",q:"Steigen die Preise für Futtermittel (eine Vorleistung), verschiebt sich die Angebotskurve für Milch nach rechts.",
+ a:false, sol:"Falsch. Teurere Vorleistungen erhöhen die Produktionskosten → zu jedem Preis wird WENIGER angeboten → die Angebotskurve verschiebt sich nach LINKS."},
+
+/* ---------- 9.3 (LZ 17–21) ---------- */
+{s:"9.3",lz:"LZ 17",type:"mc",q:"Was bezeichnet das Marktgleichgewicht?",
+ opts:["Den höchstmöglichen Preis","Den Schnittpunkt von Angebots- und Nachfragekurve, bei dem angebotene = nachgefragte Menge","Den Punkt, an dem das Angebot am grössten ist","Eine staatlich festgelegte Menge"],
+ a:1, sol:"Das Marktgleichgewicht ist der Schnittpunkt der beiden Kurven. Dort entspricht die angebotene genau der nachgefragten Menge – man spricht vom «geräumten Markt»."},
+
+{s:"9.3",lz:"LZ 18",type:"mc",q:"Der Preis liegt mit 3 Fr. über dem Gleichgewichtspreis (2 Fr.). Es werden 200'000 L angeboten, aber nur 50'000 L nachgefragt. Was entsteht und was passiert?",
+ opts:["Nachfrageüberhang; der Preis steigt","Angebotsüberhang; die Anbieter reduzieren die Menge, der Preis sinkt zum Gleichgewicht","Gleichgewicht; nichts passiert","Angebotsüberhang; der Preis steigt weiter"],
+ a:1, sol:"Es entsteht ein Angebotsüberhang (Überschuss). Damit die Anbieter nicht auf der Milch sitzenbleiben, reduzieren sie die Menge, bis der Gleichgewichtspreis wieder erreicht ist."},
+
+{s:"9.3",lz:"LZ 18",type:"tf",q:"Bei einem zu tiefen Preis entsteht ein Nachfrageüberhang; die Nachfrager sind bereit, mehr zu zahlen, bis die nachgefragte der angebotenen Menge entspricht.",
+ a:true, sol:"Richtig. Beim Nachfrageüberhang (Preis unter Gleichgewicht) bekommen nicht alle Nachfrager das Gut; sie bieten mehr, der Preis steigt zum Gleichgewicht hin."},
+
+{s:"9.3",lz:"LZ 19",type:"mc",q:"Schlechte Witterung lässt die Heupreise steigen; die Angebotskurve für Milch verschiebt sich nach links. Wie verändert sich das neue Gleichgewicht?",
+ opts:["Grössere Menge, tieferer Preis","Kleinere Menge, höherer Preis","Grössere Menge, höherer Preis","Menge und Preis bleiben gleich"],
+ a:1, sol:"Ein Rückgang des Angebots (Linksverschiebung) führt zu einem neuen Gleichgewicht mit kleinerer Menge und höherem Preis. Bei einer Ausweitung des Angebots wäre es umgekehrt."},
+
+{s:"9.3",lz:"LZ 20",type:"calc",q:"Nachfrage: p = 4 − 0,02·m  |  Angebot: p = 1 + 0,01·m  (m in 1000 Liter). Berechnen Sie die Gleichgewichtsmenge m.",
+ ans:100, tol:0.5, unit:"(in 1000 Liter)",
+ sol:"Gleichsetzen: 4 − 0,02m = 1 + 0,01m → 3 = 0,03m → m = 100. Die Gleichgewichtsmenge beträgt 100 (also 100'000 Liter)."},
+
+{s:"9.3",lz:"LZ 20",type:"calc",q:"Setzen Sie die Gleichgewichtsmenge (m = 100) ein und berechnen Sie den Gleichgewichtspreis p (in Fr.).",
+ ans:2, tol:0.05, unit:"Fr.",
+ sol:"p = 1 + 0,01·100 = 1 + 1 = 2. Der Gleichgewichtspreis beträgt 2 Franken – Probe mit der Nachfrage: 4 − 0,02·100 = 2. ✓"},
+
+{s:"9.3",lz:"LZ 21",type:"mc",q:"Was beschreibt die Preiselastizität der Nachfrage?",
+ opts:["Wie stark der Preis steigt, wenn die Kosten steigen","Wie stark die nachgefragte Menge auf eine Preisänderung reagiert","Wie viele Anbieter es auf dem Markt gibt","Wie hoch die Steuern auf ein Gut sind"],
+ a:1, sol:"Die Preiselastizität zeigt an, wie stark die nachgefragte Menge reagiert, wenn sich der Preis ändert. Sie bestimmt, wie steil die Nachfragekurve ist und wie stark eine Angebotsverschiebung den Markt verändert."},
+
+{s:"9.3",lz:"LZ 21",type:"mc",q:"Welches Gut hat tendenziell die unelastischste Nachfrage?",
+ opts:["Eine einzelne Zigarettenmarke","Lebensnotwendige, nicht ersetzbare Medikamente","Eine bestimmte Schokoladensorte","Ein bestimmtes Mineralwasser"],
+ a:1, sol:"Produkte mit geringen Substitutionsmöglichkeiten haben eine unelastische Nachfrage (z. B. nicht ersetzbare Medikamente, Suchtmittel, Grundnahrungsmittel, Benzin). Eine einzelne Marke ist dagegen sehr elastisch, weil man leicht zu einer anderen wechselt."},
+
+/* ---------- 22.1 (LZ 22–24) ---------- */
+{s:"22.1",lz:"LZ 22",type:"mc",q:"Wie werden im Erbrecht die verstorbene Person und ihr zu verteilendes Vermögen bezeichnet?",
+ opts:["Erbe und Erbteil","Erblasser und Erbmasse","Vermächtnisnehmer und freie Quote","Erblasser und Pflichtteil"],
+ a:1, sol:"Die verstorbene Person ist der Erblasser, das gesamte zu verteilende Vermögen die Erbmasse (Erbschaft). Das Erbrecht regelt, wer erbt und wie die Erbmasse aufzuteilen ist (Art. 457–640 ZGB)."},
+
+{s:"22.1",lz:"LZ 23",type:"mc",q:"Wer erbt von Gesetzes wegen, wenn jemand stirbt?",
+ opts:["Nur der Staat","Die Verwandten sowie der Ehegatte bzw. eingetragene Partner; ohne diese das Gemeinwesen","Ausschliesslich die Kinder","Immer die Konkubinatspartner"],
+ a:1, sol:"Von Gesetzes wegen erben die Verwandten und der überlebende Ehegatte bzw. eingetragene Partner. Fehlen solche Erben, fällt die Erbschaft an das Gemeinwesen (Kanton/Gemeinde des letzten Wohnsitzes)."},
+
+{s:"22.1",lz:"LZ 24",type:"tf",q:"Mit dem «letzten Willen» – einem Testament oder einem Erbvertrag – kann der Erblasser die gesetzliche Erbfolge innerhalb gesetzlicher Schranken verändern.",
+ a:true, sol:"Richtig. Durch Testament oder Erbvertrag kann der Erblasser von der gesetzlichen Erbfolge abweichen – allerdings nur innerhalb der gesetzlichen Schranken (Pflichtteile)."},
+
+/* ---------- 22.2 (LZ 25–31) ---------- */
+{s:"22.2",lz:"LZ 25",type:"mc",q:"Der Grundsatz «Das Gut folgt dem Blut» bedeutet:",
+ opts:["Nur Blutsverwandte ersten Grades erben","Die Erbberechtigung der Verwandten hängt von der Nähe der Verwandtschaft zum Erblasser ab","Der Staat erbt zuerst","Ehegatten erben gar nichts"],
+ a:1, sol:"Der Grundsatz besagt, dass die Erbberechtigung der Verwandten von der Nähe ihrer Verwandtschaft abhängt. Die Verwandten werden dazu in drei Stämme (Parentelen) eingeteilt."},
+
+{s:"22.2",lz:"LZ 25",type:"mc",q:"Zu welcher Parentel gehören die Geschwister, Nichten und Neffen des Erblassers?",
+ opts:["1. Parentel","2. Parentel (elterlicher Stamm)","3. Parentel (grosselterlicher Stamm)","Sie gehören keiner Parentel an"],
+ a:1, sol:"2. Parentel = elterlicher Stamm: Vater und Mutter sowie deren Nachkommen (Geschwister, Nichten und Neffen). Die 1. Parentel sind die Nachkommen (Kinder, Enkel, Urenkel), die 3. der grosselterliche Stamm."},
+
+{s:"22.2",lz:"LZ 26",type:"mc",q:"Ein Erblasser hinterlässt eine Tochter sowie seine Eltern und einen Bruder. Wer erbt?",
+ opts:["Tochter, Eltern und Bruder zu gleichen Teilen","Nur die Tochter (1. Parentel schliesst die übrigen aus)","Nur die Eltern","Nur der Bruder"],
+ a:1, sol:"Eine nähere Parentel schliesst die entfernteren vollständig aus. Da eine Nachkommin (1. Parentel) vorhanden ist, erbt nur sie; Eltern und Bruder (2. Parentel) gehen leer aus."},
+
+{s:"22.2",lz:"LZ 27",type:"mc",q:"Der Erblasser hatte zwei Töchter; eine ist vorverstorben und hinterliess zwei Söhne. Wie wird geerbt?",
+ opts:["Alles geht an die überlebende Tochter","Überlebende Tochter ½, die beiden Enkel je ¼","Alle drei je ⅓","Die Enkel erben nichts"],
+ a:1, sol:"An die Stelle vorverstorbener Kinder treten ihre Nachkommen (Art. 457 Abs. 3 ZGB). Die lebende Tochter erbt ½, der Anteil der verstorbenen Tochter (½) geht je zur Hälfte an deren zwei Söhne = je ¼."},
+
+{s:"22.2",lz:"LZ 28",type:"mc",q:"Eine Mutter stirbt und hinterlässt drei Kinder (keine sind vorverstorben). Wie hoch ist der gesetzliche Erbteil jedes Kindes?",
+ opts:["½","⅓","¼","¾"],
+ a:1, sol:"Die Kinder erben zu gleichen Teilen (Art. 457 Abs. 2 ZGB). Bei drei Kindern erhält jedes ⅓ der Erbschaft."},
+
+{s:"22.2",lz:"LZ 28",type:"mc",q:"Eine Erblasserin (keine Nachkommen) hinterlässt ihre Mutter und drei Brüder; der Vater ist vorverstorben. Wie viel erbt jeder Bruder?",
+ opts:["⅓","¼","⅙","½"],
+ a:2, sol:"Vater und Mutter erben je ½ (elterlicher Stamm). Die Mutter erhält ihre Hälfte. Die Hälfte des vorverstorbenen Vaters geht an dessen Nachkommen, also die drei Brüder zu gleichen Teilen: ½ ÷ 3 = ⅙ pro Bruder."},
+
+{s:"22.2",lz:"LZ 28",type:"mc",q:"Ein Erblasser (keine Nachkommen, keine Eltern/Geschwister) hinterlässt zwei Grossmütter, einen Grossvater und einen Onkel. Wie viel erbt jede dieser vier Personen?",
+ opts:["½","⅓","¼","⅛"],
+ a:2, sol:"Es kommt der grosselterliche Stamm (3. Parentel) zum Zug. Im Lehrmittelbeispiel erben die zwei Grossmütter, der Grossvater und der Onkel je einen Viertel (¼)."},
+
+{s:"22.2",lz:"LZ 29",type:"mc",q:"Ein Mann stirbt und hinterlässt seine Ehefrau und seine Eltern (keine Kinder). Wie viel erbt die Ehefrau?",
+ opts:["½","⅔","¾","Die ganze Erbschaft"],
+ a:2, sol:"Teilt der Ehegatte mit Erben des elterlichen Stammes, erhält er ¾ der Erbschaft (Art. 462 Ziff. 2 ZGB). Die Eltern teilen sich das restliche ¼ (je ⅛)."},
+
+{s:"22.2",lz:"LZ 29",type:"mc",q:"Eine Frau stirbt und hinterlässt ihren Ehemann sowie zwei Kinder. Wie verteilt sich die Erbschaft?",
+ opts:["Ehemann ¾, Kinder je ⅛","Ehemann ½, Kinder je ¼","Alle je ⅓","Ehemann erbt alles"],
+ a:1, sol:"Teilt der Ehegatte mit Nachkommen, erhält er die Hälfte (Art. 462 Ziff. 1 ZGB). Die andere Hälfte teilen sich die zwei Kinder zu gleichen Teilen: je ¼."},
+
+{s:"22.2",lz:"LZ 30",type:"calc",q:"Ein Ehemann (Errungenschaftsbeteiligung) sparte während der Ehe 100'000 Fr. Er stirbt und hinterlässt Ehefrau und Tochter. Wie viel Fr. erhält die Ehefrau INSGESAMT (Güterrecht + Erbe)?",
+ ans:75000, tol:1, unit:"Fr.",
+ sol:"Zuerst Güterrecht: Die Frau erhält ½ der Errungenschaft = 50'000 Fr. Die anderen 50'000 Fr. fallen in die Erbschaft. Davon erbt die Frau (mit Nachkommen) wieder ½ = 25'000 Fr. Total Ehefrau = 50'000 + 25'000 = 75'000 Fr. (Tochter: 25'000 Fr.)."},
+
+{s:"22.2",lz:"LZ 30",type:"open",q:"Erklären Sie, weshalb bei Ehegatten zuerst die güterrechtliche Auseinandersetzung vorgenommen werden muss.",
+ sol:"Nicht das ganze Vermögen der Ehegatten fällt in die Erbschaft. Der Teil, der dem überlebenden Ehegatten aus dem ehelichen Güterrecht zusteht, gehört nicht zum Nachlass und wird ihm vorab zugeteilt. Erst was nach der güterrechtlichen Auseinandersetzung übrig bleibt, bildet die Erbmasse, die anschliessend nach Erbrecht verteilt wird."},
+
+{s:"22.2",lz:"LZ 31",type:"tf",q:"Geschiedene Ehegatten und Konkubinatspartner haben keinen gesetzlichen Erbanspruch.",
+ a:true, sol:"Richtig. Mit der Scheidung erlischt die Erbberechtigung des Ehegatten. Konkubinatspartner sind rechtlich nicht verheiratet und haben deshalb von Gesetzes wegen kein Erbrecht – sie können sich aber per Testament oder Erbvertrag gegenseitig einsetzen."},
+
+/* ---------- 22.3 (LZ 32–38) ---------- */
+{s:"22.3",lz:"LZ 32",type:"mc",q:"Worin unterscheiden sich Testament und Erbvertrag?",
+ opts:["Beide sind zweiseitige Rechtsgeschäfte","Das Testament ist einseitig und jederzeit widerrufbar; der Erbvertrag ist zwei-/mehrseitig und nur im gegenseitigen Einverständnis änderbar","Der Erbvertrag ist einseitig, das Testament zweiseitig","Es gibt keinen Unterschied"],
+ a:1, sol:"Das Testament ist eine einseitige Verfügung (eine Person) und jederzeit frei widerrufbar. Der Erbvertrag wird mit einer oder mehreren anderen Personen geschlossen (zwei-/mehrseitiges Rechtsgeschäft) und kann nur in gegenseitigem Einverständnis aufgehoben oder geändert werden."},
+
+{s:"22.3",lz:"LZ 33",type:"mc",q:"Welche Voraussetzungen müssen für die Verfügungsfähigkeit erfüllt sein?",
+ opts:["Mindestens 16 Jahre alt und verheiratet","Urteilsfähig und das 18. Lebensjahr vollendet","Nur urteilsfähig","Schweizer Bürgerrecht"],
+ a:1, sol:"Rechtsgültig letztwillig verfügen kann nur, wer urteilsfähig ist UND das 18. Lebensjahr zurückgelegt hat (Verfügungsfähigkeit, Art. 467 ZGB)."},
+
+{s:"22.3",lz:"LZ 34",type:"mc",q:"Der Erblasser vermacht einer bestimmten Person einen einzelnen Vermögensgegenstand (z. B. eine Geldsumme oder eine Sache). Um welche Verfügungsart handelt es sich?",
+ opts:["Erbeinsetzung","Vermächtnis","Teilungsvorschrift","Willensvollstreckung"],
+ a:1, sol:"Das ist ein Vermächtnis (Art. 484 ZGB): Der Begünstigte (Vermächtnisnehmer) erhält einen bestimmten Gegenstand, wird aber nicht Erbe. Die vier Verfügungsarten sind Erbeinsetzung, Vermächtnis, Teilungsvorschriften und Willensvollstreckung."},
+
+{s:"22.3",lz:"LZ 34",type:"open",q:"Nennen und erläutern Sie die vier Verfügungsarten.",
+ sol:"1) Erbeinsetzung – Einsetzen eines/mehrerer Erben für die ganze Erbschaft oder einen Teil. 2) Vermächtnis – einer Person einen bestimmten Gegenstand zuwenden, ohne sie zum Erben zu machen. 3) Teilungsvorschriften – vorschreiben, wie die Erbschaft unter den Erben geteilt wird (z. B. wer welchen Gegenstand erhält). 4) Willensvollstreckung – einen Willensvollstrecker bestimmen, der den Nachlass verwaltet, Schulden zahlt, Vermächtnisse ausrichtet und die Erbschaft teilt."},
+
+{s:"22.3",lz:"LZ 35",type:"mc",q:"Welche Formvorschriften gelten für das eigenhändige Testament?",
+ opts:["Es muss am Computer geschrieben und von einem Notar gestempelt sein","Es muss vollständig von Hand geschrieben, mit genauem Datum versehen und unterzeichnet sein","Es genügt eine mündliche Erklärung vor einem Zeugen","Es muss von zwei Zeugen verfasst werden"],
+ a:1, sol:"Das eigenhändige Testament muss vollständig von Hand geschrieben, mit dem genauen Datum versehen und unterschrieben sein (Art. 505 ZGB). So ist sichergestellt, dass es dem Willen des Erblassers entspricht."},
+
+{s:"22.3",lz:"LZ 35",type:"mc",q:"In welcher Situation ist ein mündliches Nottestament zulässig?",
+ opts:["Wenn man keine Lust zum Schreiben hat","In einer Notsituation, z. B. bei Todesgefahr, vor zwei Zeugen","Immer, sofern ein Notar anwesend ist","Nur für Beträge unter 1'000 Fr."],
+ a:1, sol:"Das mündliche Nottestament ist eine Ausnahme für Notsituationen (z. B. Todesgefahr). Der Erblasser verfügt mündlich vor zwei Zeugen, die die Verfügung danach schriftlich festhalten und beim Gericht einreichen (Art. 506 ff. ZGB)."},
+
+{s:"22.3",lz:"LZ 36",type:"mc",q:"Wie hoch ist der Pflichtteil der Nachkommen (gemäss Lehrmittel)?",
+ opts:["½ des gesetzlichen Erbanspruchs","¾ des gesetzlichen Erbanspruchs","Die ganze Erbschaft","Kein Pflichtteil"],
+ a:1, sol:"Nachkommen: ¾ des gesetzlichen Erbanspruchs (Art. 471 Ziff. 1 ZGB, Lehrmittelstand). Eltern und Ehegatte: je ½ des gesetzlichen Erbanspruchs. Andere Erben (z. B. Geschwister): kein Pflichtteil."},
+
+{s:"22.3",lz:"LZ 36",type:"open",q:"Erklären Sie die Begriffe «Pflichtteil» und «freie Quote».",
+ sol:"Der Pflichtteil ist der gesetzlich geschützte Mindestanteil, der den nächsten Verwandten und dem überlebenden Ehegatten/eingetragenen Partner zusteht; über ihn kann der Erblasser nicht frei verfügen. Die freie Quote (verfügbarer Teil) ist der Anteil der Erbschaft, über den der Erblasser frei verfügen kann (z. B. zugunsten Dritter)."},
+
+{s:"22.3",lz:"LZ 37",type:"calc",q:"Eine Erblasserin hinterlässt Ehegatte und Nachkommen. Ehegatte: gesetzl. Anspruch ½, Pflichtteil ¼. Nachkommen: gesetzl. ½, Pflichtteil ⅜. Wie gross ist die freie Quote (als Bruch mit Nenner 8, geben Sie den Zähler ein)?",
+ ans:3, tol:0.01, unit:"/ 8",
+ sol:"Pflichtteile: Ehegatte ¼ = 2/8, Nachkommen 3/8. Summe = 5/8. Freie Quote = 1 − 5/8 = 3/8. Zähler = 3."},
+
+{s:"22.3",lz:"LZ 37",type:"calc",q:"Ein Erblasser hinterlässt Ehefrau und Eltern. Ehefrau: gesetzl. ¾, Pflichtteil ⅜. Eltern: gesetzl. ¼, Pflichtteil ⅛. Wie gross ist die freie Quote (Nenner 8, Zähler eingeben)?",
+ ans:4, tol:0.01, unit:"/ 8 ( = ½ )",
+ sol:"Pflichtteile: Ehefrau ⅜, Eltern ⅛. Summe = 4/8. Freie Quote = 1 − 4/8 = 4/8 = ½. Zähler = 4. Der Erblasser kann also über die Hälfte frei verfügen."},
+
+{s:"22.3",lz:"LZ 38",type:"open",q:"Unter welchen Voraussetzungen ist eine Enterbung möglich?",
+ sol:"Eine Enterbung (Entzug des Pflichtteils) ist ausnahmsweise möglich, wenn: (1) der Erbe eine schwere Straftat gegen den Erblasser oder eine ihm nahestehende Person begangen hat, oder (2) der Erbe seine familienrechtlichen Pflichten gegenüber dem Erblasser oder dessen Angehörigen schwer verletzt hat (z. B. geschuldete Unterhaltszahlungen trotz finanzieller Möglichkeit nicht geleistet hat)."},
+];
+
+/* ============ RENDERING ============ */
+const quizEl = document.getElementById('quiz');
+const state = {}; // id -> {answered:bool, correct:bool}
+let lastSec = null;
+
+function el(tag, cls, html){const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e;}
+
+Q.forEach((item, i)=>{
+  // section header
+  if(item.s !== lastSec){
+    const meta = sections.find(x=>x.id===item.s);
+    const sec = el('div','sec '+meta.color);
+    sec.innerHTML = `<span class="num">${meta.id}</span><h2>${meta.title}</h2>
+      <span class="tag">${meta.color==='m'?'Marktwirtschaft':'Erbrecht'}</span><span class="rule"></span>`;
+    quizEl.appendChild(sec);
+    lastSec = item.s;
+  }
+  const meta = sections.find(x=>x.id===item.s);
+  const id = i+1;
+  const card = el('div','card '+meta.color);
+  card.id = 'q'+id;
+  card.innerHTML = `<div class="qhead"><span class="qnum">${id}</span>
+    <span class="qtext">${item.q}</span><span class="lz">${item.lz}</span></div>`;
+  const body = el('div');
+  card.appendChild(body);
+  const fb = el('div','fb');
+  card.appendChild(fb);
+
+  function lock(parent){[...parent.children].forEach(c=>c.classList.add('locked'));}
+  function record(correct){
+    if(state[id]) return;
+    state[id] = {answered:true, correct};
+    updateDash();
+  }
+
+  if(item.type==='mc'){
+    const opts = el('div','opts');
+    const letters=['A','B','C','D','E'];
+    item.opts.forEach((o,oi)=>{
+      const b = el('button','opt');
+      b.innerHTML = `<span class="mark">${letters[oi]}</span><span>${o}</span>`;
+      b.onclick = ()=>{
+        if(state[id]) return;
+        lock(opts);
+        if(oi===item.a){ b.classList.add('correct'); fbShow(true); }
+        else{ b.classList.add('wrong'); opts.children[item.a].classList.add('correct'); fbShow(false);
+          [...opts.children].forEach((c,ci)=>{if(ci!==oi&&ci!==item.a)c.classList.add('dim');}); }
+        record(oi===item.a);
+      };
+      opts.appendChild(b);
+    });
+    body.appendChild(opts);
+  }
+  else if(item.type==='tf'){
+    const tf = el('div','tf');
+    const yes = el('button',null,'Richtig'); const no = el('button',null,'Falsch');
+    [[yes,true],[no,false]].forEach(([btn,val])=>{
+      btn.onclick=()=>{
+        if(state[id])return; lock(tf);
+        const right = (val===item.a);
+        const target = item.a ? yes : no;
+        target.classList.add('correct');
+        if(!right) btn.classList.add('wrong');
+        fbShow(right); record(right);
+      };
+      tf.appendChild(btn);
+    });
+    body.appendChild(tf);
+  }
+  else if(item.type==='calc'){
+    const wrap = el('div','calc');
+    const inp = el('input'); inp.type='text'; inp.placeholder='Antwort…';
+    const unit = el('span','unit', item.unit||'');
+    const btn = el('button','btn',null); btn.textContent='Prüfen';
+    btn.onclick=()=>{
+      if(state[id])return;
+      const raw = inp.value.replace(/['’\s]/g,'').replace(',','.');
+      const val = parseFloat(raw);
+      const right = !isNaN(val) && Math.abs(val-item.ans) <= item.tol;
+      inp.classList.add(right?'ok':'no'); inp.disabled=true; btn.disabled=true;
+      fbShow(right); record(right);
+    };
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')btn.click();});
+    wrap.append(inp,unit,btn);
+    body.appendChild(wrap);
+  }
+  else if(item.type==='open'){
+    const btn = el('button','reveal-btn',null); btn.textContent='Musterlösung anzeigen';
+    btn.onclick=()=>{
+      fb.className='fb sol show';
+      fb.innerHTML=`<span class="ti sol-ti">Musterlösung</span>${item.sol}`;
+      btn.style.display='none';
+      if(!state[id]){ state[id]={answered:true,correct:null}; updateDash(); }
+    };
+    body.appendChild(btn);
+  }
+
+  function fbShow(good){
+    fb.className='fb '+(good?'good':'bad')+' show';
+    fb.innerHTML=`<span class="ti">${good?'Richtig!':'Nicht ganz.'}</span>${item.sol}`;
+  }
+
+  quizEl.appendChild(card);
+});
+
+/* ============ DASHBOARD ============ */
+const barFill=document.getElementById('barFill');
+const doneEl=document.getElementById('done');
+const okEl=document.getElementById('ok');
+function updateDash(){
+  const keys=Object.keys(state);
+  const done=keys.length;
+  const ok=keys.filter(k=>state[k].correct===true).length;
+  doneEl.textContent=done;
+  okEl.textContent=ok;
+  barFill.style.width=(done/Q.length*100)+'%';
+}
+document.getElementById('resetBtn').onclick=()=>{ location.reload(); };
+</script>
+</body>
+</html>
